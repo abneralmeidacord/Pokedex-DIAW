@@ -1,0 +1,47 @@
+:root {
+  /* Cores e medidas compartilhadas da referência no Figma. */
+  --color-canvas: #f7f8fc;
+  --color-surface: #fff;
+  --color-white: #fff;
+  --color-ink: #20283d;
+  --color-muted: #637087;
+  --color-line: #e4e8f0;
+  --color-red: #e7474e;
+  --color-focus: var(--color-ink);
+
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+  --font-heading: 'Outfit', 'Segoe UI', sans-serif;
+  --font-mono: 'Roboto Mono', Consolas, monospace;
+
+  --font-size-micro: 0.75rem;
+  --font-size-small: 0.875rem;
+  --font-size-body: 1rem;
+  --font-size-heading: 1.5rem;
+  --font-size-title: 2.5rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-micro: 1.333333;
+  --line-height-small: 1.428571;
+  --line-height-body: 1.5;
+  --line-height-heading: 1.333333;
+  --line-height-title: 1.2;
+
+  --space-0: 0;
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-20: 1.25rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+
+  --radius-8: 0.5rem;
+  --radius-16: 1rem;
+  --radius-24: 1.5rem;
+  --radius-999: 999px;
+  --shadow-soft: 0 8px 12px rgb(36 48 77 / 5%);
+}
