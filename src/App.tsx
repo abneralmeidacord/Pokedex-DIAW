@@ -1,15 +1,20 @@
-import { useEffect, useRef, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Header } from './components/Header/Header'
 import { Home } from './pages/Home/Home'
 import { Catalog } from './pages/Catalog/Catalog'
 import { PokemonDetails } from './pages/PokemonDetails/PokemonDetails'
 import { TrainersPage } from './pages/Trainers/TrainersPage'
+import { TrainerTeamPage } from './pages/TrainerTeam/TrainerTeamPage'
+import { getTrainerIdFromHash } from './utils/routes'
 import type { Page } from './types/navigation'
+import { EMPTY_CATALOG_FILTERS } from './utils/pokemonFilters'
+import type { CatalogFilters } from './utils/pokemonFilters'
 import './App.css'
 
-function getPage(hash: string): Page {
-  if (hash.startsWith('#pokemon/')) return 'pokemon'
-  switch (hash.split('?')[0]) {
+function getPage(): Page {
+  if (window.location.hash.startsWith('#pokemon/')) return 'pokemon'
+  if (getTrainerIdFromHash(window.location.hash) !== null) return 'treinadores'
+  switch (window.location.hash) {
     case '#catalogo': return 'catalogo'
     case '#treinadores': return 'treinadores'
     default: return 'inicio'
@@ -34,10 +39,11 @@ const titles: Record<Page, string> = {
 
 function App() {
   const locationHash = useSyncExternalStore(subscribeToNavigation, getLocationHash)
-  const page = getPage(locationHash)
-  const trainerPokemonId = new URLSearchParams(locationHash.split('?')[1]).get('pokemon')
+  const page = getPage()
+  const trainerId = getTrainerIdFromHash(locationHash)
   const mainRef = useRef<HTMLElement>(null)
   const previousLocation = useRef(locationHash)
+  const [catalogFilters, setCatalogFilters] = useState<CatalogFilters>(EMPTY_CATALOG_FILTERS)
 
   useEffect(() => {
     document.title = `${titles[page]} | Pokédex`
@@ -63,9 +69,17 @@ function App() {
       <Header currentPage={page === 'pokemon' ? 'catalogo' : page} />
       <main ref={mainRef} id="conteudo" className="app__main" tabIndex={-1}>
         {page === 'inicio' && <Home />}
-        {page === 'catalogo' && <Catalog onViewDetails={(id) => { window.location.hash = `pokemon/${id}` }} />}
+        {page === 'catalogo' && (
+          <Catalog
+            filters={catalogFilters}
+            onFiltersChange={setCatalogFilters}
+            onViewDetails={(id) => { window.location.hash = `pokemon/${id}` }}
+          />
+        )}
         {page === 'pokemon' && <PokemonDetails key={locationHash} pokemonId={Number(locationHash.slice('#pokemon/'.length))} />}
-        {page === 'treinadores' && <TrainersPage pokemonId={trainerPokemonId === null ? undefined : Number(trainerPokemonId)} />}
+        {page === 'treinadores' && (
+          trainerId === null ? <TrainersPage /> : <TrainerTeamPage trainerId={trainerId} />
+        )}
       </main>
     </>
   )

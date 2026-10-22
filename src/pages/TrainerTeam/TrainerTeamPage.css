@@ -1,0 +1,94 @@
+.trainer-team {
+  width: min(100%, 1440px);
+  margin-inline: auto;
+  padding: 24px 64px 48px;
+  box-sizing: border-box;
+}
+
+.trainer-team__back {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: var(--color-muted, #74809a);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.trainer-team__back:hover {
+  color: var(--color-red, #ff354d);
+  text-decoration: underline;
+}
+
+.trainer-team__hero {
+  padding: 32px;
+  border-radius: 24px;
+  background: #fff0f2;
+}
+
+.trainer-team__name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.2;
+}
+
+.trainer-team__badges {
+  margin: 12px 0 0;
+  color: var(--color-red, #ff354d);
+  font-size: 14px;
+}
+
+.trainer-team__size {
+  margin: 8px 0 0;
+  color: var(--color-muted, #74809a);
+  font-size: 12px;
+}
+
+.trainer-team__subtitle {
+  margin: 40px 0 24px;
+  font-family: var(--font-heading);
+  font-size: 24px;
+}
+
+.trainer-team__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trainer-team__item {
+  min-width: 0;
+}
+
+.trainer-team__item > * {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.trainer-team__not-found {
+  font-family: var(--font-heading);
+  font-size: 28px;
+}
+
+@media (max-width: 900px) {
+  .trainer-team {
+    padding-inline: 24px;
+  }
+
+  .trainer-team__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .trainer-team__hero {
+    padding: 24px;
+  }
+
+  .trainer-team__list {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

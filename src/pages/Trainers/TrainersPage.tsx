@@ -1,15 +1,18 @@
+import { useState } from 'react'
+import { Button } from '../../components/Button/Button'
+import { SearchBar } from '../../components/SearchBar/SearchBar'
 import { TrainerCard } from '../../components/TrainerCard/TrainerCard'
-import { getPokemonById, getTrainersByPokemonId } from '../../services/pokedexService'
+import { getTrainerTeam, getTrainers } from '../../services/pokedexService'
+import { getTrainerHref } from '../../utils/routes'
+import { formatTeamPreview, getTrainerPortraitSource } from '../../utils/trainerPresentation'
 import './TrainersPage.css'
 
-export type TrainersPageProps = {
-  pokemonId?: number
-}
+const trainers = getTrainers()
 
-export function TrainersPage({ pokemonId }: TrainersPageProps) {
-  const isPokemonContext = pokemonId !== undefined
-  const pokemon = isPokemonContext ? getPokemonById(pokemonId) : undefined
-  const trainers = pokemon ? getTrainersByPokemonId(pokemon.id) : []
+export function TrainersPage() {
+  const [query, setQuery] = useState('')
+  const term = query.trim().toLowerCase()
+  const visibleTrainers = trainers.filter((trainer) => trainer.name.toLowerCase().includes(term))
 
   return (
     <section className="trainers-page" aria-labelledby="trainers-title">
@@ -30,31 +33,30 @@ export function TrainersPage({ pokemonId }: TrainersPageProps) {
         )}
       </div>
 
-      {isPokemonContext ? (
-        trainers.length > 0 ? (
-          <ul className="trainers-page__list" aria-label={`Treinadores de ${pokemon?.name}`}>
-            {trainers.map((trainer) => (
-              <li className="trainers-page__item" key={trainer.id}>
-                <TrainerCard name={trainer.name} badges={trainer.badges} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="trainers-page__empty">
-            {pokemon ? 'Nenhum treinador associado a este Pokémon no catálogo.' : 'Escolha um Pokémon válido para consultar os treinadores.'}
-          </p>
-        )
-      ) : <ul className="trainers-page__list" aria-label="Lista de treinadores">
-        
-        <li className="trainers-page__item">
-          <TrainerCard
-            name="Ash"
-            badges={9}
-            teamPreview="Pikachu · Venusaur · Charizard +3"
-            onViewTeam={() => {}}
-          />
-        </li>
-      </ul>}
+      <div className="trainers-page__search">
+        <SearchBar label="Pesquisar treinador" value={query} onChange={setQuery} />
+      </div>
+
+      {visibleTrainers.length === 0 ? (
+        <div className="trainers-page__empty" role="status">
+          <p className="trainers-page__empty-title">Nenhum treinador encontrado.</p>
+          <Button variant="secondary" onClick={() => setQuery('')}>Limpar pesquisa</Button>
+        </div>
+      ) : (
+        <ul className="trainers-page__list" aria-label="Lista de treinadores">
+          {visibleTrainers.map((trainer) => (
+            <li className="trainers-page__item" key={trainer.id}>
+              <TrainerCard
+                name={trainer.name}
+                badges={trainer.badges}
+                portraitSrc={getTrainerPortraitSource(trainer.id)}
+                teamPreview={formatTeamPreview(getTrainerTeam(trainer).map((pokemon) => pokemon.name))}
+                onViewTeam={() => { window.location.hash = getTrainerHref(trainer.id) }}
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }

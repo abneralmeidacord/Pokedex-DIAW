@@ -16,32 +16,6 @@
   gap: var(--space-12);
 }
 
-.trainer-card__portrait {
-  width: 48px;
-  aspect-ratio: 1;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: var(--radius-999);
-}
-
-.trainer-card__image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.trainer-card__fallback {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  background: var(--color-red-soft);
-  color: var(--color-red);
-  font-family: var(--font-heading);
-  font-size: var(--font-size-body);
-  font-weight: var(--font-weight-semibold);
-}
-
 .trainer-card__identity {
   min-width: 0;
 }

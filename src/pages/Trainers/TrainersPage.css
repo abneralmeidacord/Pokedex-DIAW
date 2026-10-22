@@ -22,12 +22,36 @@
   font-size: var(--font-size-small);
 }
 
+.trainers-page__search {
+  max-width: 420px;
+  margin-top: var(--space-32);
+}
+
+.trainers-page__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+  margin-top: var(--space-48);
+  padding: var(--space-64) var(--space-24);
+  border-radius: var(--radius-24);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.trainers-page__empty-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-heading);
+  font-weight: var(--font-weight-semibold);
+}
+
 .trainers-page__list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
   gap: var(--space-24);
-  margin: var(--space-48) 0 0;
+  margin: var(--space-32) 0 0;
   padding: 0;
   list-style: none;
 }
