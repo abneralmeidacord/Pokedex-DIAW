@@ -18,9 +18,19 @@
   padding: var(--space-64) var(--space-32);
 }
 
+.home__eyebrow-container {
+  width: fit-content;
+  display: inline-flex;
+  margin-bottom: var(--space-8);
+  padding: var(--space-8) var(--space-32);
+  background-color: var(--color-red-soft);
+  border-radius: var(--radius-16);
+  align-items: center;
+  justify-content: center;
+}
+
 .home__eyebrow {
-  margin-bottom: var(--space-20);
-  color: var(--color-muted);
+  color: var(--color-red);
   font-size: var(--font-size-micro);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
@@ -29,17 +39,24 @@
 
 .home__title {
   max-width: 12ch;
-  font-size: clamp(2.5rem, 4.5vw, 4rem);
+  color: var(--color-red);
+  font-size: clamp(6.5rem, 7.5vw, 7rem);
   line-height: 1.1;
   letter-spacing: -0.035em;
 }
 
-.home__title span {
-  color: var(--color-red);
+.home__subtitle {
+  max-width: 30ch;
+  color: var(--color-ink);
+  font-size: clamp(2.5rem, 3.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
 }
 
+
 .home__description {
-  max-width: 43ch;
+  max-width: 50ch;
   margin-top: var(--space-24);
   color: var(--color-muted);
   line-height: 1.8;

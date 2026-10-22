@@ -13,13 +13,18 @@ export function Home({ onOpenPokedex }: HomeProps) {
       <main id="inicio" className="home__main">
         <section className="home__hero" aria-labelledby="home-title">
           <div className="home__copy">
-            <p className="home__eyebrow">Sua jornada começa aqui</p>
+            <div className="home__eyebrow-container">
+              <p className="home__eyebrow">Gotta catch them all</p>
+            </div>
             <h1 id="home-title" className="home__title">
-              Um mundo de <span>Pokémon</span> para descobrir.
+              Pokedéx
             </h1>
+            <h2 id="home-title" className="home__subtitle">
+              Sua próxima aventura <br></br>
+              começa aqui.
+            </h2>
             <p className="home__description">
-              Explore Pokémon, conheça seus tipos e habilidades e descubra os
-              treinadores que fazem parte desse universo.
+              Conheça os Pokémon, descubra seus atributos e encontre os parceiros dos seus treinadores favoritos.
             </p>
             <Button className="home__action" onClick={onOpenPokedex} endIcon="→">
               Abrir Pokédex
