@@ -2,7 +2,7 @@ import { useEffect, useRef, useSyncExternalStore } from 'react'
 import { Header } from './components/Header/Header'
 import { Home } from './pages/Home/Home'
 import { Catalog } from './pages/Catalog/Catalog'
-import { Treinador } from './pages/Treinador/Treinador'
+import { TrainersPage } from './pages/Trainers/TrainersPage'
 import type { Page } from './types/navigation'
 import './App.css'
 
@@ -55,7 +55,7 @@ function App() {
       <main ref={mainRef} id="conteudo" className="app__main" tabIndex={-1}>
         {page === 'inicio' && <Home />}
         {page === 'catalogo' && <Catalog />}
-        {page === 'treinadores' && <Treinador />}
+        {page === 'treinadores' && <TrainersPage />}
       </main>
     </>
   )
