@@ -1,11 +1,17 @@
 .header {
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-line);
+  border: 2px solid var(--color-line);
+  width: min(100%, 1200px);
+  border-radius: 100px;
+  align-self: center;
+  justify-self: center;
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
 .header__content {
   display: flex;
-  width: min(100%, 1200px);
+  width: min(100%, 960px);
   min-height: 88px;
   align-items: center;
   justify-content: space-between;

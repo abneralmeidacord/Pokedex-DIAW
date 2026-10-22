@@ -3,7 +3,7 @@ import { Header } from '../../components/Header/Header'
 import './Home.css'
 
 export type HomeProps = {
-  onOpenPokedex?: () => void
+  onOpenPokedex?: () => ""
 }
 
 export function Home({ onOpenPokedex }: HomeProps) {

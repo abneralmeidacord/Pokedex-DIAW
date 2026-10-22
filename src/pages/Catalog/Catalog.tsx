@@ -1,21 +1,18 @@
-import { Button } from '../../components/Button/Button'
 import { Header } from '../../components/Header/Header'
 import './Catalog.css'
 
-export type catalogProps = {
-  onOpenPokedex?: () => void
-}
-
-export function Catalog({ onOpenPokedex }: catalogProps) {
+export function Catalog() {
   return (
     <div className="catalog">
       <Header />
       <main id="inicio" className="catalog__main">
         <section className="catalog__hero" aria-labelledby="catalog-title">
           <div className="catalog__copy">
-            <p className="catalog__eyebrow">Sua jornada começa aqui</p>
+            <div className="catalog__eyebrow-container">
+              <p className="catalog__eyebrow">Descubra novos Pokémons</p>
+            </div>
             <h1 id="catalog-title" className="catalog__title">
-              Um mundo de <span>Pokémon</span> para descobrir.
+              Explore a Pokédex.
             </h1>
           </div>
 
