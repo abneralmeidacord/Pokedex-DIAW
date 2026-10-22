@@ -1,0 +1,23 @@
+.app__main {
+  min-height: calc(100svh - 156px);
+}
+
+.app__main:focus {
+  outline: none;
+}
+
+.app__skip-link {
+  position: fixed;
+  z-index: 10;
+  top: var(--space-16);
+  left: var(--space-16);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-8);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transform: translateY(-200%);
+}
+
+.app__skip-link:focus {
+  transform: translateY(0);
+}

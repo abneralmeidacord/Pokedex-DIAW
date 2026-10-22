@@ -1,27 +1,32 @@
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 import './Button.css'
 
-export type ButtonProps = ComponentPropsWithoutRef<'button'> & {
+type SharedProps = {
   variant?: 'primary' | 'secondary'
   endIcon?: ReactNode
 }
+
+export type ButtonProps = SharedProps & (
+  | (ComponentPropsWithoutRef<'button'> & { href?: never })
+  | (ComponentPropsWithoutRef<'a'> & { href: string })
+)
 
 export function Button({
   children,
   className = '',
   variant = 'primary',
   endIcon,
-  type = 'button',
   ...props
 }: ButtonProps) {
-  return (
-    <button
-      {...props}
-      type={type}
-      className={`button button--${variant} ${className}`.trim()}
-    >
-      {children}
-      {endIcon && <span className="button__icon" aria-hidden="true">{endIcon}</span>}
-    </button>
-  )
+  const classes = `button button--${variant} ${className}`.trim()
+  const content = <>
+    {children}
+    {endIcon && <span className="button__icon" aria-hidden="true">{endIcon}</span>}
+  </>
+
+  if (props.href !== undefined) {
+    return <a {...props} className={classes}>{content}</a>
+  }
+
+  return <button {...props} type={props.type ?? 'button'} className={classes}>{content}</button>
 }

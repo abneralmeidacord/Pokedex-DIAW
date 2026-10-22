@@ -4,7 +4,7 @@ Atividade 03 da disciplina de Desenvolvimento e Integração de Aplicações Web
 
 ## Estado do projeto
 
-A etapa 01 prepara a organização, as variáveis de CSS, a tipografia e as configurações de desenvolvimento. A etapa 02 adiciona o Header, o Button reutilizável e a composição estática da Home, com título, texto de apoio, Pokédex fechada e botão Abrir Pokédex. O catálogo e a abertura do dispositivo serão integrados nas próximas etapas.
+A etapa 01 prepara a organização, as variáveis de CSS, a tipografia e as configurações de desenvolvimento. A etapa 02 implementa a abertura estática da Home e a navegação entre início, catálogo e treinadores. O catálogo contém o container vazio para os cards da etapa 03, e treinadores possui a estrutura inicial.
 
 - [Issue 01 — Setup](https://github.com/abneralmeidacord/Pokedex-DIAW/issues/1)
 - [Planejamento em 12 entregas](https://github.com/users/abneralmeidacord/projects/5)
@@ -52,7 +52,7 @@ O endereço padrão do preview é `http://localhost:4173`.
 | --- | --- |
 | `src/main.tsx` | Inicialização do React e importação dos estilos gerais |
 | `index.html` | Metadados em português e carregamento das fontes |
-| `src/App.tsx` | Composição da aplicação |
+| `src/App.tsx` | Navegação por hash, títulos por página e foco após troca de tela |
 | `src/components/Header/` | Marca e espaço opcional para navegação, com props tipadas e CSS próprio |
 | `src/components/Button/` | Botão reutilizável com variantes, ícone opcional e atributos nativos tipados |
 | `src/pages/Home/` | Composição estática da Home e estilos exclusivos |
@@ -61,7 +61,7 @@ O endereço padrão do preview é `http://localhost:4173`.
 | `src/assets/` | Arquivos importados pelo código |
 | `public/` | Arquivos públicos servidos diretamente, como o favicon |
 
-Conforme as próximas etapas precisarem, criar `src/data/` para o JSON, `src/services/` para consultas locais, `src/types/` para tipos e `src/utils/` para funções auxiliares. A etapa de setup não antecipa modelos nem serviços de dados.
+O JSON está em src/data/pokedex-data.json. Criar serviços e modelos dos dados nas próximas etapas, conforme necessário.
 
 ## Convenções de estilos e tipos
 
@@ -79,9 +79,20 @@ As próximas etapas utilizarão o [JSON disponibilizado pelo professor](https://
 
 Os valores base de cores, tipografia e espaçamento seguem o [catálogo no Figma](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-129). Fontes: [Outfit](https://fontsource.org/fonts/outfit), [Inter](https://fontsource.org/fonts/inter) e [Roboto Mono](https://fontsource.org/fonts/roboto-mono). As fontes das imagens de Pokémon e treinadores deverão ser documentadas quando esses arquivos forem adicionados.
 
-## Home estática — etapa 02
+## Abertura estática e navegação — etapa 02
 
-- Header recebe brand, homeHref e children para compor a navegação quando as telas estiverem disponíveis.
-- Button aceita os atributos nativos de botão, variant (primary ou secondary) e endIcon. O tipo padrão é button, evitando envio involuntário de formulários.
-- Home expõe onOpenPokedex para conectar a abertura em uma etapa futura. Por enquanto, o botão faz parte da composição estática e não navega nem anima o dispositivo.
-- A ilustração do dispositivo é provisória, construída em CSS. A integração do Figma atingiu o limite de consultas e o navegador retornou erro de sessão; portanto, a comparação visual, os textos exatos e a substituição pela ilustração original estão pendentes.
+- Rotas: `#inicio`, `#catalogo` e `#treinadores`, sem nova dependência. A marca retorna ao início; links de navegação identificam a página atual com `aria-current`.
+- Button aceita props nativas tipadas, `variant` e `endIcon`. Com `href`, renderiza um link; para ações, um botão com `type="button"` por padrão.
+- Home aceita `catalogHref`. Abrir Pokédex e o dispositivo abrem imediatamente o catálogo.
+- Home e Header preservam a composição personalizada do projeto, com sombra no Header e sem os itens numerados ou o link Entrar sem animação. O dispositivo exibe apenas `public/assets/imgs/pokedex-closed.png`, sem trocar a imagem no hover ou foco. A imagem `pokedex-open.png` permanece disponível para a etapa de animações.
+- O limite da integração impediu consultar os demais frames. Catálogo e treinadores têm apenas a estrutura inicial desta etapa. O grid vazio do catálogo está preparado para a etapa 03.
+- CSS por componente, hover, foco visível, link Pular para o conteúdo, título por rota e foco no conteúdo ao navegar. Histórico, links diretos e recarregamento funcionam.
+- O JSON em `src/data/pokedex-data.json` foi preservado.
+
+Validação realizada: build, lint, navegação com mouse e Tab/Enter, foco, voltar/avançar, links diretos e abertura imediata. Conferidas larguras de 320 a 1440 px, carregamento das imagens do dispositivo e ausência de erros no console do build de produção.
+
+O commit será feito manualmente pelo desenvolvedor após sua validação:
+
+```sh
+git commit -m "feat: cria componentes base e abertura estatica da Pokedex"
+```

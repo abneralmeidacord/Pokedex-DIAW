@@ -7,6 +7,7 @@
   --color-muted: #637087;
   --color-line: #e4e8f0;
   --color-red: #e7474e;
+  --color-red-hover: #cc353d;
   --color-red-soft: #FFF0F0;
   --color-focus: var(--color-ink);
 
@@ -41,6 +42,7 @@
   --space-64: 4rem;
 
   --radius-8: 0.5rem;
+  --radius-12: 0.75rem;
   --radius-16: 1rem;
   --radius-24: 1.5rem;
   --radius-999: 999px;
