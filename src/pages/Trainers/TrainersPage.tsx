@@ -2,17 +2,36 @@ import { useState } from 'react'
 import { Button } from '../../components/Button/Button'
 import { SearchBar } from '../../components/SearchBar/SearchBar'
 import { TrainerCard } from '../../components/TrainerCard/TrainerCard'
-import { getTrainerTeam, getTrainers } from '../../services/pokedexService'
+import {
+  getPokemonById,
+  getTrainerTeam,
+  getTrainers,
+  getTrainersByPokemonId,
+} from '../../services/pokedexService'
 import { getTrainerHref } from '../../utils/routes'
 import { formatTeamPreview, getTrainerPortraitSource } from '../../utils/trainerPresentation'
 import './TrainersPage.css'
 
 const trainers = getTrainers()
 
-export function TrainersPage() {
+export function TrainersPage({ pokemonId }: { pokemonId?: number }) {
   const [query, setQuery] = useState('')
+
+  const isPokemonContext = pokemonId !== undefined
+
+  const pokemon = pokemonId === undefined
+    ? undefined
+    : getPokemonById(pokemonId)
+
+  const availableTrainers = pokemonId === undefined
+    ? trainers
+    : getTrainersByPokemonId(pokemonId)
+
   const term = query.trim().toLowerCase()
-  const visibleTrainers = trainers.filter((trainer) => trainer.name.toLowerCase().includes(term))
+
+  const visibleTrainers = availableTrainers.filter((trainer) =>
+    trainer.name.toLowerCase().includes(term)
+  )
 
   return (
     <section className="trainers-page" aria-labelledby="trainers-title">
