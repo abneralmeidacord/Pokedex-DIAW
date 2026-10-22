@@ -4,14 +4,15 @@ import './PokemonList.css'
 
 export type PokemonListProps = {
   pokemon: readonly Pokemon[]
+  onQuickView?: () => void
 }
 
-export function PokemonList({ pokemon }: PokemonListProps) {
+export function PokemonList({ pokemon, onQuickView }: PokemonListProps) {
   return (
     <ul className="pokemon-list" aria-label="Catálogo de Pokémon">
       {pokemon.map((pokemon) => (
         <li className="pokemon-list__item" key={pokemon.id}>
-          <PokemonCard pokemon={pokemon} />
+          <PokemonCard pokemon={pokemon} onQuickView={onQuickView} />
         </li>
       ))}
     </ul>

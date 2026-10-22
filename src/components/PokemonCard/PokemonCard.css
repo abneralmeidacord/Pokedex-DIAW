@@ -23,6 +23,12 @@
   display: none;
 }
 
+.pokemon-card__trigger {
+  width: 100%;
+  border: 0;
+  background: transparent;
+}
+
 .pokemon-card__summary:focus-visible {
   outline-offset: -4px;
 }
@@ -68,6 +74,9 @@
 
 .pokemon-card__name {
   max-width: 100%;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: break-word;
   font-size: var(--font-size-heading);
   line-height: var(--line-height-heading);
 }
