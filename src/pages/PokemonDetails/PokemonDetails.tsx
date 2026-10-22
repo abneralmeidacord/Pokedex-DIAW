@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Button } from '../../components/Button/Button'
 import { PokemonStats } from '../../components/PokemonStats/PokemonStats'
-import { getPokemonById } from '../../services/pokedexService'
+import { getPokemonById, getPokemonNeighbors } from '../../services/pokedexService'
 import { getPokemonImageSource, getPokemonTypeColor, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
 import pokeballDetail from '../../assets/figma/pokeball-detail.svg'
 import bulbasaurDetail from '../../assets/figma/bulbasaur-detail.png'
@@ -27,6 +27,7 @@ export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
   }
 
   const imageSource = pokemon.id === 1 ? bulbasaurDetail : getPokemonImageSource(pokemon.id)
+  const { previous, next } = getPokemonNeighbors(pokemon.id)
 
   return (
     <section
@@ -59,6 +60,7 @@ export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
                   {getPokemonTypeLabel(type)}
                 </span>
               ))}
+              {pokemon.types.length === 0 && <span className="pokemon-details__type">Sem tipo</span>}
             </div>
           </div>
         </div>
@@ -67,11 +69,29 @@ export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
           <h2 className="pokemon-details__heading">Pequeno no tamanho.<br />Grande no potencial.</h2>
           <p className="pokemon-details__description">Consulte os seis atributos base de {pokemon.name} e descubra os treinadores associados a ele.</p>
           <PokemonStats stats={pokemon.stats} variant="detail" />
-          <Button className="pokemon-details__trainers" variant="secondary" endIcon="→" disabled>
+          <Button className="pokemon-details__trainers" variant="secondary" endIcon={'\u2192'} href={`#treinadores?pokemon=${pokemon.id}`}>
             Conhecer os treinadores
           </Button>
         </div>
       </div>
+      <nav className="pokemon-details__pagination" aria-label="Navegar entre Pokémon">
+        {previous ? (
+          <Button className="pokemon-details__previous" variant="secondary" href={`#pokemon/${previous.id}`} rel="prev" aria-label={`Pokémon anterior: ${previous.name}`}>
+            <span aria-hidden="true">{'\u2190'}</span> {previous.name}
+          </Button>
+        ) : (
+          <Button className="pokemon-details__previous" variant="secondary" disabled>
+            <span aria-hidden="true">{'\u2190'}</span> Anterior
+          </Button>
+        )}
+        {next ? (
+          <Button className="pokemon-details__next" variant="secondary" href={`#pokemon/${next.id}`} rel="next" endIcon={'\u2192'} aria-label={`Próximo Pokémon: ${next.name}`}>
+            {next.name}
+          </Button>
+        ) : (
+          <Button className="pokemon-details__next" variant="secondary" endIcon={'\u2192'} disabled>Próximo</Button>
+        )}
+      </nav>
     </section>
   )
 }

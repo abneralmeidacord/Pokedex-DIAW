@@ -12,12 +12,27 @@ export function getPokemonById(id: number): Pokemon | undefined {
   return pokemon === undefined ? undefined : structuredClone(pokemon)
 }
 
+export function getPokemonNeighbors(id: number): { previous: Pokemon | undefined; next: Pokemon | undefined } {
+  const index = pokedex.pokemon.findIndex((pokemon) => pokemon.id === id)
+  if (index === -1) return { previous: undefined, next: undefined }
+
+  return {
+    previous: index > 0 ? structuredClone(pokedex.pokemon[index - 1]) : undefined,
+    next: index < pokedex.pokemon.length - 1 ? structuredClone(pokedex.pokemon[index + 1]) : undefined,
+  }
+}
+
 export function getPokemonTypes(): readonly PokemonType[] {
   return structuredClone(pokedex.types)
 }
 
 export function getTrainers(): readonly Trainer[] {
   return structuredClone(pokedex.trainers)
+}
+
+export function getTrainersByPokemonId(pokemonId: number): readonly Trainer[] {
+  if (!pokedex.pokemon.some((pokemon) => pokemon.id === pokemonId)) return []
+  return structuredClone(pokedex.trainers.filter((trainer) => trainer.pokemonIds.includes(pokemonId)))
 }
 
 export function getTrainerById(id: number): Trainer | undefined {
