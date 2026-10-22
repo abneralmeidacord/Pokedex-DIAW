@@ -124,45 +124,6 @@
   background: var(--color-surface);
 }
 
-.pokemon-quick-view__stats-title {
-  margin-bottom: var(--space-16);
-  font-size: 20px;
-  line-height: 28px;
-}
-
-.pokemon-quick-view__stats { margin: 0; }
-
-.pokemon-quick-view__stat {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--space-8);
-  margin-bottom: var(--space-16);
-  font-size: var(--font-size-small);
-  line-height: var(--line-height-small);
-}
-
-.pokemon-quick-view__stat dt { color: var(--color-muted); }
-
-.pokemon-quick-view__stat dd {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: var(--font-size-micro);
-}
-
-.pokemon-quick-view__track {
-  grid-column: 1 / -1;
-  height: 8px;
-  overflow: hidden;
-  border-radius: var(--radius-999);
-  background: var(--color-line);
-}
-
-.pokemon-quick-view__track span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-}
-
 .pokemon-quick-view__footer {
   display: flex;
   flex-direction: column;

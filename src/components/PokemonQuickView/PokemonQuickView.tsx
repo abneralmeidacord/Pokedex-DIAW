@@ -1,25 +1,17 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Button } from '../Button/Button'
-import type { Pokemon, PokemonStats } from '../../types/pokemon'
+import { PokemonStats } from '../PokemonStats/PokemonStats'
+import type { Pokemon } from '../../types/pokemon'
 import { getPokemonImageSource, getPokemonTypeColor, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
 import './PokemonQuickView.css'
 
 export type PokemonQuickViewProps = {
   isOpen: boolean
-  pokemon: Pokemon | null
+  pokemon: Pokemon | null | undefined
   onClose: () => void
-  onViewDetails?: () => void
+  onViewDetails?: (id: number) => void
 }
-
-const statDefinitions: readonly { key: keyof PokemonStats; label: string; color: string }[] = [
-  { key: 'hp', label: 'HP', color: '#e7474e' },
-  { key: 'attack', label: 'Ataque', color: '#ad442d' },
-  { key: 'defense', label: 'Defesa', color: '#886615' },
-  { key: 'specialAttack', label: 'Ataque especial', color: '#365f99' },
-  { key: 'specialDefense', label: 'Defesa especial', color: '#287566' },
-  { key: 'speed', label: 'Velocidade', color: '#805399' },
-]
 
 export function PokemonQuickView({ isOpen, pokemon, onClose, onViewDetails }: PokemonQuickViewProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -29,7 +21,7 @@ export function PokemonQuickView({ isOpen, pokemon, onClose, onViewDetails }: Po
   const descriptionId = useId()
   const [failedImageSource, setFailedImageSource] = useState<string | null>(null)
   const imageSource = pokemon ? getPokemonImageSource(pokemon.id) : null
-  const shouldOpen = isOpen && pokemon !== null
+  const shouldOpen = isOpen && Boolean(pokemon)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -156,22 +148,15 @@ export function PokemonQuickView({ isOpen, pokemon, onClose, onViewDetails }: Po
           )}
         </header>
         <div className="pokemon-quick-view__body">
-          <section aria-labelledby={`${titleId}-stats`}>
-            <h3 id={`${titleId}-stats`} className="pokemon-quick-view__stats-title">Atributos base</h3>
-            <dl className="pokemon-quick-view__stats">
-              {statDefinitions.map(({ key, label, color }) => (
-                <div className="pokemon-quick-view__stat" key={key}>
-                  <dt>{label}</dt>
-                  <dd>{pokemon.stats[key]}</dd>
-                  <div className="pokemon-quick-view__track" aria-hidden="true">
-                    <span style={{ width: `${Math.min(pokemon.stats[key] / 150 * 100, 100)}%`, backgroundColor: color }} />
-                  </div>
-                </div>
-              ))}
-            </dl>
-          </section>
+          <PokemonStats stats={pokemon.stats} />
           <footer className="pokemon-quick-view__footer">
-            <Button className="pokemon-quick-view__details" onClick={onViewDetails} disabled={!onViewDetails} title={onViewDetails ? undefined : 'A ficha completa será implementada em uma próxima etapa.'} endIcon="→">
+            <Button
+              className="pokemon-quick-view__details"
+              onClick={onViewDetails ? () => onViewDetails(pokemon.id) : undefined}
+              disabled={!onViewDetails}
+              title={onViewDetails ? undefined : 'A ficha completa será implementada em uma próxima etapa.'}
+              endIcon="→"
+            >
               Ver detalhes
             </Button>
             <button type="button" className="pokemon-quick-view__back" onClick={onClose}>Voltar para a lista</button>
