@@ -1,65 +1,59 @@
 .trainer-team {
   width: min(100%, 1440px);
   margin-inline: auto;
-  padding: var(--space-8) var(--space-64) var(--space-48);
+  padding: 24px 64px 48px;
+  box-sizing: border-box;
 }
 
 .trainer-team__back {
-  display: inline-flex;
-  min-height: 32px;
-  align-items: center;
-  color: var(--color-muted);
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-medium);
+  display: inline-block;
+  margin-bottom: 32px;
+  color: var(--color-muted, #74809a);
+  font-size: 14px;
   text-decoration: none;
 }
 
 .trainer-team__back:hover {
-  color: var(--color-red);
+  color: var(--color-red, #ff354d);
   text-decoration: underline;
 }
 
-.trainer-team__not-found {
-  margin-top: var(--space-24);
-  font-size: var(--font-size-heading);
-}
-
 .trainer-team__hero {
-  display: flex;
-  align-items: center;
-  gap: var(--space-24);
-  margin-top: var(--space-24);
-  padding: var(--space-32);
-  border-radius: var(--radius-24);
-  background: var(--color-red-soft);
+  padding: 32px;
+  border-radius: 24px;
+  background: #fff0f2;
 }
 
 .trainer-team__name {
-  font-size: clamp(32px, 4vw, 40px);
-  line-height: var(--line-height-title);
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.2;
 }
 
 .trainer-team__badges {
-  margin-top: var(--space-8);
-  color: var(--color-red);
-  font-size: var(--font-size-small);
+  margin: 12px 0 0;
+  color: var(--color-red, #ff354d);
+  font-size: 14px;
 }
 
 .trainer-team__size {
-  margin-top: var(--space-4);
-  color: var(--color-muted);
-  font-size: var(--font-size-micro);
+  margin: 8px 0 0;
+  color: var(--color-muted, #74809a);
+  font-size: 12px;
 }
 
 .trainer-team__subtitle {
-  margin-top: var(--space-48);
+  margin: 40px 0 24px;
+  font-family: var(--font-heading);
+  font-size: 24px;
 }
 
 .trainer-team__list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-24);
-  margin: var(--space-24) 0 0;
+  gap: 24px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -68,20 +62,33 @@
   min-width: 0;
 }
 
+.trainer-team__item > * {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.trainer-team__not-found {
+  font-family: var(--font-heading);
+  font-size: 28px;
+}
+
 @media (max-width: 900px) {
-  .trainer-team { padding-inline: var(--space-24); }
-  .trainer-team__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trainer-team {
+    padding-inline: 24px;
+  }
+
+  .trainer-team__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
   .trainer-team__hero {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--space-24);
+    padding: 24px;
   }
 
   .trainer-team__list {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-16);
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 }

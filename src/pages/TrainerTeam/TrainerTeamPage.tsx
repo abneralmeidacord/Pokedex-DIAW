@@ -1,11 +1,9 @@
 import { TeamMemberCard } from '../../components/TeamMemberCard/TeamMemberCard'
-import { TrainerPortrait } from '../../components/TrainerPortrait/TrainerPortrait'
 import { getTrainerById, getTrainerTeam } from '../../services/pokedexService'
 import { TRAINERS_HREF } from '../../utils/routes'
 import {
   formatEarnedBadges,
   formatTeamSize,
-  getTrainerPortraitSource,
 } from '../../utils/trainerPresentation'
 import './TrainerTeamPage.css'
 
@@ -32,7 +30,7 @@ export function TrainerTeamPage({ trainerId }: TrainerTeamPageProps) {
       <a className="trainer-team__back" href={TRAINERS_HREF}>← Todos os treinadores</a>
 
       <div className="trainer-team__hero">
-        <TrainerPortrait name={trainer.name} src={getTrainerPortraitSource(trainer.id)} size="lg" />
+        
         <div>
           <h1 id="trainer-team-title" className="trainer-team__name">{trainer.name}</h1>
           <p className="trainer-team__badges">{formatEarnedBadges(trainer.badges)}</p>
@@ -43,7 +41,6 @@ export function TrainerTeamPage({ trainerId }: TrainerTeamPageProps) {
       <h2 className="trainer-team__subtitle">Parceiros de jornada</h2>
       <ul className="trainer-team__list" aria-label={`Equipe de ${trainer.name}`}>
         {team.map((pokemon, index) => (
-          
           <li className="trainer-team__item" key={`${pokemon.id}-${index}`}>
             <TeamMemberCard pokemon={pokemon} />
           </li>
