@@ -4,7 +4,7 @@ Atividade 03 da disciplina de Desenvolvimento e Integração de Aplicações Web
 
 ## Estado do projeto
 
-A etapa 01 prepara a organização, as variáveis de CSS, a tipografia e as configurações de desenvolvimento. A tela atual é uma apresentação mínima para conferir os estilos; a home, o catálogo e as demais funcionalidades serão construídos nas próximas issues.
+A etapa 01 prepara a organização, as variáveis de CSS, a tipografia e as configurações de desenvolvimento. A etapa 02 adiciona o Header, o Button reutilizável e a composição estática da Home, com título, texto de apoio, Pokédex fechada e botão Abrir Pokédex. O catálogo e a abertura do dispositivo serão integrados nas próximas etapas.
 
 - [Issue 01 — Setup](https://github.com/abneralmeidacord/Pokedex-DIAW/issues/1)
 - [Planejamento em 12 entregas](https://github.com/users/abneralmeidacord/projects/5)
@@ -52,13 +52,16 @@ O endereço padrão do preview é `http://localhost:4173`.
 | --- | --- |
 | `src/main.tsx` | Inicialização do React e importação dos estilos gerais |
 | `index.html` | Metadados em português e carregamento das fontes |
-| `src/App.tsx` e `src/App.css` | Composição inicial da aplicação e seus estilos exclusivos |
+| `src/App.tsx` | Composição da aplicação |
+| `src/components/Header/` | Marca e espaço opcional para navegação, com props tipadas e CSS próprio |
+| `src/components/Button/` | Botão reutilizável com variantes, ícone opcional e atributos nativos tipados |
+| `src/pages/Home/` | Composição estática da Home e estilos exclusivos |
 | `src/styles/variables.css` | Tokens compartilhados de cores, fontes, espaçamentos, raios e sombra |
 | `src/styles/global.css` | Reset, tipografia semântica, mídia, formulários e foco visível |
 | `src/assets/` | Arquivos importados pelo código |
 | `public/` | Arquivos públicos servidos diretamente, como o favicon |
 
-Conforme as próximas etapas precisarem, criar `src/components/` para componentes reutilizáveis, `src/pages/` para telas, `src/data/` para o JSON, `src/services/` para consultas locais, `src/types/` para tipos e `src/utils/` para funções auxiliares. A etapa de setup não antecipa modelos nem serviços de dados.
+Conforme as próximas etapas precisarem, criar `src/data/` para o JSON, `src/services/` para consultas locais, `src/types/` para tipos e `src/utils/` para funções auxiliares. A etapa de setup não antecipa modelos nem serviços de dados.
 
 ## Convenções de estilos e tipos
 
@@ -75,3 +78,10 @@ Conforme as próximas etapas precisarem, criar `src/components/` para componente
 As próximas etapas utilizarão o [JSON disponibilizado pelo professor](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2003%20-%20JSON/data/pokedex-data.json), preservando seus registros e relações. O catálogo não será limitado aos exemplos ilustrados no Figma.
 
 Os valores base de cores, tipografia e espaçamento seguem o [catálogo no Figma](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-129). Fontes: [Outfit](https://fontsource.org/fonts/outfit), [Inter](https://fontsource.org/fonts/inter) e [Roboto Mono](https://fontsource.org/fonts/roboto-mono). As fontes das imagens de Pokémon e treinadores deverão ser documentadas quando esses arquivos forem adicionados.
+
+## Home estática — etapa 02
+
+- Header recebe brand, homeHref e children para compor a navegação quando as telas estiverem disponíveis.
+- Button aceita os atributos nativos de botão, variant (primary ou secondary) e endIcon. O tipo padrão é button, evitando envio involuntário de formulários.
+- Home expõe onOpenPokedex para conectar a abertura em uma etapa futura. Por enquanto, o botão faz parte da composição estática e não navega nem anima o dispositivo.
+- A ilustração do dispositivo é provisória, construída em CSS. A integração do Figma atingiu o limite de consultas e o navegador retornou erro de sessão; portanto, a comparação visual, os textos exatos e a substituição pela ilustração original estão pendentes.

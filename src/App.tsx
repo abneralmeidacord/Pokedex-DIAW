@@ -1,12 +1,7 @@
-import './App.css'
+import { Home } from './pages/Home/Home'
 
 function App() {
-  return (
-    <main className="app">
-      <h1>Pokédex</h1>
-      <p className="app__description">Explore um mundo de possibilidades.</p>
-    </main>
-  )
+  return <Home />
 }
 
 export default App
