@@ -1,5 +1,10 @@
 import { TrainerCard } from '../../components/TrainerCard/TrainerCard'
+import { getTrainerTeam, getTrainers } from '../../services/pokedexService'
+import { getTrainerHref } from '../../utils/routes'
+import { formatTeamPreview, getTrainerPortraitSource } from '../../utils/trainerPresentation'
 import './TrainersPage.css'
+
+const trainers = getTrainers()
 
 export function TrainersPage() {
   return (
@@ -15,15 +20,17 @@ export function TrainersPage() {
       </div>
 
       <ul className="trainers-page__list" aria-label="Lista de treinadores">
-        
-        <li className="trainers-page__item">
-          <TrainerCard
-            name="Ash"
-            badges={9}
-            teamPreview="Pikachu · Venusaur · Charizard +3"
-            onViewTeam={() => {}}
-          />
-        </li>
+        {trainers.map((trainer) => (
+          <li className="trainers-page__item" key={trainer.id}>
+            <TrainerCard
+              name={trainer.name}
+              badges={trainer.badges}
+              portraitSrc={getTrainerPortraitSource(trainer.id)}
+              teamPreview={formatTeamPreview(getTrainerTeam(trainer).map((pokemon) => pokemon.name))}
+              onViewTeam={() => { window.location.hash = getTrainerHref(trainer.id) }}
+            />
+          </li>
+        ))}
       </ul>
     </section>
   )

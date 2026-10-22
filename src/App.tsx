@@ -4,11 +4,14 @@ import { Home } from './pages/Home/Home'
 import { Catalog } from './pages/Catalog/Catalog'
 import { PokemonDetails } from './pages/PokemonDetails/PokemonDetails'
 import { TrainersPage } from './pages/Trainers/TrainersPage'
+import { TrainerTeamPage } from './pages/TrainerTeam/TrainerTeamPage'
+import { getTrainerIdFromHash } from './utils/routes'
 import type { Page } from './types/navigation'
 import './App.css'
 
 function getPage(): Page {
   if (window.location.hash.startsWith('#pokemon/')) return 'pokemon'
+  if (getTrainerIdFromHash(window.location.hash) !== null) return 'treinadores'
   switch (window.location.hash) {
     case '#catalogo': return 'catalogo'
     case '#treinadores': return 'treinadores'
@@ -35,6 +38,7 @@ const titles: Record<Page, string> = {
 function App() {
   const locationHash = useSyncExternalStore(subscribeToNavigation, getLocationHash)
   const page = getPage()
+  const trainerId = getTrainerIdFromHash(locationHash)
   const mainRef = useRef<HTMLElement>(null)
   const previousLocation = useRef(locationHash)
 
@@ -64,7 +68,9 @@ function App() {
         {page === 'inicio' && <Home />}
         {page === 'catalogo' && <Catalog onViewDetails={(id) => { window.location.hash = `pokemon/${id}` }} />}
         {page === 'pokemon' && <PokemonDetails key={locationHash} pokemonId={Number(locationHash.slice('#pokemon/'.length))} />}
-        {page === 'treinadores' && <TrainersPage />}
+        {page === 'treinadores' && (
+          trainerId === null ? <TrainersPage /> : <TrainerTeamPage trainerId={trainerId} />
+        )}
       </main>
     </>
   )

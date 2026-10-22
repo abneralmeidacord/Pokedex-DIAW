@@ -24,3 +24,14 @@ export function getTrainerById(id: number): Trainer | undefined {
   const trainer = pokedex.trainers.find((trainer) => trainer.id === id)
   return trainer === undefined ? undefined : structuredClone(trainer)
 }
+
+export function getTrainerTeam(trainer: Trainer): readonly Pokemon[] {
+  return trainer.pokemonIds.flatMap((id) => {
+    const pokemon = getPokemonById(id)
+    return pokemon === undefined ? [] : [pokemon]
+  })
+}
+
+export function getTrainersByPokemonId(pokemonId: number): readonly Trainer[] {
+  return structuredClone(pokedex.trainers.filter((trainer) => trainer.pokemonIds.includes(pokemonId)))
+}
