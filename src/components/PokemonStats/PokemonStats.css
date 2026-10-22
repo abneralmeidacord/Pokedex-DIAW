@@ -43,3 +43,25 @@
   height: 100%;
   border-radius: inherit;
 }
+
+.pokemon-stats--detail .pokemon-stats__title {
+  margin-bottom: var(--space-24);
+  font-size: var(--font-size-heading);
+  line-height: 32px;
+}
+
+.pokemon-stats--detail .pokemon-stats__list {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.pokemon-stats--detail .pokemon-stats__stat {
+  min-height: 40px;
+  margin-bottom: 0;
+}
+
+.pokemon-stats--detail .pokemon-stats__value {
+  font-family: var(--font-body);
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+}

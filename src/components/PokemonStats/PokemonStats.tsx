@@ -4,6 +4,7 @@ import './PokemonStats.css'
 
 export type PokemonStatsProps = {
   stats: PokemonStatsValues
+  variant?: 'compact' | 'detail'
 }
 
 const statDefinitions: readonly { key: keyof PokemonStatsValues; label: string; color: string }[] = [
@@ -15,11 +16,11 @@ const statDefinitions: readonly { key: keyof PokemonStatsValues; label: string; 
   { key: 'speed', label: 'Velocidade', color: '#805399' },
 ]
 
-export function PokemonStats({ stats }: PokemonStatsProps) {
+export function PokemonStats({ stats, variant = 'compact' }: PokemonStatsProps) {
   const titleId = useId()
 
   return (
-    <section className="pokemon-stats" aria-labelledby={titleId}>
+    <section className={`pokemon-stats pokemon-stats--${variant}`} aria-labelledby={titleId}>
       <h3 id={titleId} className="pokemon-stats__title">Atributos base</h3>
       <dl className="pokemon-stats__list">
         {statDefinitions.map(({ key, label, color }) => (
@@ -28,7 +29,7 @@ export function PokemonStats({ stats }: PokemonStatsProps) {
             <dd>
               <span className="pokemon-stats__value">{stats[key]}</span>
               <span className="pokemon-stats__track" aria-hidden="true">
-                <span style={{ width: `${Math.min(Math.max(stats[key] / 150 * 100, 0), 100)}%`, backgroundColor: color }} />
+                <span style={{ width: `${Math.min(Math.max(stats[key] / 150 * 100, 0), 100)}%`, backgroundColor: `var(--pokemon-stats-color, ${color})` }} />
               </span>
             </dd>
           </div>
