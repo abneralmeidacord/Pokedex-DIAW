@@ -1,4 +1,5 @@
 .pokemon-quick-view {
+  --quick-view-text-color: var(--color-ink);
   position: fixed;
   inset: 0 auto 0 0;
   width: min(430px, 100%);
@@ -12,8 +13,12 @@
   overscroll-behavior: contain;
   border: 0;
   border-radius: 0 var(--radius-24) var(--radius-24) 0;
-  background: #9ed886;
+  background: var(--quick-view-type-color, #e4e8f0);
   color: var(--color-ink);
+}
+
+.pokemon-quick-view[data-type='4'] {
+  --quick-view-text-color: #367546;
 }
 
 .pokemon-quick-view::backdrop {
@@ -42,7 +47,7 @@
 }
 
 .pokemon-quick-view__eyebrow {
-  color: #367546;
+  color: var(--quick-view-text-color);
   font-size: var(--font-size-micro);
   text-transform: uppercase;
 }
@@ -57,7 +62,7 @@
   border: 0;
   border-radius: var(--radius-8);
   background: transparent;
-  color: #367546;
+  color: var(--quick-view-text-color);
   font-size: 36px;
   font-weight: 300;
   line-height: 1;
@@ -75,7 +80,7 @@
 }
 
 .pokemon-quick-view__number {
-  color: #367546;
+  color: var(--quick-view-text-color);
   font-family: var(--font-mono);
   font-size: var(--font-size-micro);
 }
@@ -87,13 +92,12 @@
 }
 
 .pokemon-quick-view__type {
+  background: var(--quick-view-type-color, var(--color-line));
   padding: var(--space-4) var(--space-16);
   border-radius: 6px;
   font-size: var(--font-size-micro);
   line-height: 20px;
 }
-
-.pokemon-quick-view__type--poison { background: #c197df; }
 
 .pokemon-quick-view__image,
 .pokemon-quick-view__image-fallback {
@@ -106,7 +110,7 @@
 .pokemon-quick-view__image-fallback {
   display: grid;
   place-items: center;
-  color: #367546;
+  color: var(--quick-view-text-color);
 }
 
 .pokemon-quick-view__body {

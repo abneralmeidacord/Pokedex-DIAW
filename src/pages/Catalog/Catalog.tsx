@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { PokemonList } from '../../components/PokemonList/PokemonList'
 import { PokemonQuickView } from '../../components/PokemonQuickView/PokemonQuickView'
 import { getPokemon } from '../../services/pokedexService'
+import type { Pokemon } from '../../types/pokemon'
 import './Catalog.css'
 
 const pokemon = getPokemon()
 
 export function Catalog() {
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false)
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
 
   return (
     <section className="catalog" aria-labelledby="catalog-title">
@@ -20,9 +21,13 @@ export function Catalog() {
           <h2 className="catalog__collection-title" id="catalog-collection-title">Explore o catálogo</h2>
           <p className="catalog__hint">Selecione um Pokémon para ver seus atributos.</p>
         </div>
-        <PokemonList pokemon={pokemon} onQuickView={() => setIsQuickViewOpen(true)} />
+        <PokemonList pokemon={pokemon} onQuickView={setSelectedPokemon} />
       </section>
-      <PokemonQuickView isOpen={isQuickViewOpen} onClose={() => setIsQuickViewOpen(false)} />
+      <PokemonQuickView
+        isOpen={selectedPokemon !== null}
+        pokemon={selectedPokemon}
+        onClose={() => setSelectedPokemon(null)}
+      />
     </section>
   )
 }

@@ -1,36 +1,39 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { Button } from '../Button/Button'
+import type { Pokemon, PokemonStats } from '../../types/pokemon'
+import { getPokemonImageSource, getPokemonTypeColor, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
 import './PokemonQuickView.css'
 
 export type PokemonQuickViewProps = {
   isOpen: boolean
+  pokemon: Pokemon | null
   onClose: () => void
   onViewDetails?: () => void
 }
 
-const exampleStats = [
-  { label: 'HP', value: 45, color: '#e7474e' },
-  { label: 'Ataque', value: 49, color: '#ad442d' },
-  { label: 'Defesa', value: 49, color: '#886615' },
-  { label: 'Ataque especial', value: 65, color: '#365f99' },
-  { label: 'Defesa especial', value: 65, color: '#287566' },
-  { label: 'Velocidade', value: 45, color: '#805399' },
-] as const
+const statDefinitions: readonly { key: keyof PokemonStats; label: string; color: string }[] = [
+  { key: 'hp', label: 'HP', color: '#e7474e' },
+  { key: 'attack', label: 'Ataque', color: '#ad442d' },
+  { key: 'defense', label: 'Defesa', color: '#886615' },
+  { key: 'specialAttack', label: 'Ataque especial', color: '#365f99' },
+  { key: 'specialDefense', label: 'Defesa especial', color: '#287566' },
+  { key: 'speed', label: 'Velocidade', color: '#805399' },
+]
 
-// Exemplo fixo do protótipo; a conexão com o Pokémon selecionado vem depois.
-const exampleImage = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png'
-
-export function PokemonQuickView({ isOpen, onClose, onViewDetails }: PokemonQuickViewProps) {
+export function PokemonQuickView({ isOpen, pokemon, onClose, onViewDetails }: PokemonQuickViewProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const pointerStartedOnBackdrop = useRef(false)
   const titleId = useId()
   const descriptionId = useId()
-  const [imageFailed, setImageFailed] = useState(false)
+  const [failedImageSource, setFailedImageSource] = useState<string | null>(null)
+  const imageSource = pokemon ? getPokemonImageSource(pokemon.id) : null
+  const shouldOpen = isOpen && pokemon !== null
 
   useEffect(() => {
     const dialog = dialogRef.current
-    if (!dialog || !isOpen) return
+    if (!dialog || !shouldOpen) return
 
     const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null
     const root = document.documentElement
@@ -82,17 +85,21 @@ export function PokemonQuickView({ isOpen, onClose, onViewDetails }: PokemonQuic
       body.style.paddingRight = previousBodyPadding
       if (trigger?.isConnected) trigger.focus({ preventScroll: true })
     }
-  }, [isOpen])
+  }, [shouldOpen])
 
   function isBackdropPoint(dialog: HTMLDialogElement, clientX: number, clientY: number) {
     const bounds = dialog.getBoundingClientRect()
     return clientX < bounds.left || clientX >= bounds.right || clientY < bounds.top || clientY >= bounds.bottom
   }
 
+  if (!pokemon) return null
+
   return (
     <dialog
       ref={dialogRef}
       className="pokemon-quick-view"
+      data-type={pokemon.types[0]?.id ?? 0}
+      style={{ '--quick-view-type-color': getPokemonTypeColor(pokemon.types[0]) } as CSSProperties}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
       tabIndex={-1}
@@ -119,29 +126,45 @@ export function PokemonQuickView({ isOpen, onClose, onViewDetails }: PokemonQuic
             </button>
           </div>
           <div className="pokemon-quick-view__heading">
-            <h2 id={titleId} className="pokemon-quick-view__name">Bulbasaur</h2>
-            <span className="pokemon-quick-view__number">#001</span>
+            <h2 id={titleId} className="pokemon-quick-view__name">{pokemon.name}</h2>
+            <span className="pokemon-quick-view__number">#{String(pokemon.id).padStart(3, '0')}</span>
           </div>
           <div className="pokemon-quick-view__types" aria-label="Tipos">
-            <span className="pokemon-quick-view__type">Planta</span>
-            <span className="pokemon-quick-view__type pokemon-quick-view__type--poison">Veneno</span>
+            {pokemon.types.length > 0 ? pokemon.types.map((type) => (
+              <span
+                key={type.id}
+                className="pokemon-quick-view__type"
+                data-type={type.id}
+                style={{ '--quick-view-type-color': getPokemonTypeColor(type) } as CSSProperties}
+              >
+                {getPokemonTypeLabel(type)}
+              </span>
+            )) : <span className="pokemon-quick-view__type">Sem tipo</span>}
           </div>
-          {imageFailed ? (
-            <div className="pokemon-quick-view__image-fallback" role="img" aria-label="Imagem de Bulbasaur indisponível">Sem imagem</div>
+          {!imageSource || failedImageSource === imageSource ? (
+            <div className="pokemon-quick-view__image-fallback" role="img" aria-label={`Imagem de ${pokemon.name} indisponível`}>Sem imagem</div>
           ) : (
-            <img className="pokemon-quick-view__image" src={exampleImage} alt="Bulbasaur" width={240} height={240} onError={() => setImageFailed(true)} />
+            <img
+              key={pokemon.id}
+              className="pokemon-quick-view__image"
+              src={imageSource}
+              alt={pokemon.name}
+              width={240}
+              height={240}
+              onError={() => setFailedImageSource(imageSource)}
+            />
           )}
         </header>
         <div className="pokemon-quick-view__body">
           <section aria-labelledby={`${titleId}-stats`}>
             <h3 id={`${titleId}-stats`} className="pokemon-quick-view__stats-title">Atributos base</h3>
             <dl className="pokemon-quick-view__stats">
-              {exampleStats.map(({ label, value, color }) => (
-                <div className="pokemon-quick-view__stat" key={label}>
+              {statDefinitions.map(({ key, label, color }) => (
+                <div className="pokemon-quick-view__stat" key={key}>
                   <dt>{label}</dt>
-                  <dd>{value}</dd>
+                  <dd>{pokemon.stats[key]}</dd>
                   <div className="pokemon-quick-view__track" aria-hidden="true">
-                    <span style={{ width: `${value / 150 * 100}%`, backgroundColor: color }} />
+                    <span style={{ width: `${Math.min(pokemon.stats[key] / 150 * 100, 100)}%`, backgroundColor: color }} />
                   </div>
                 </div>
               ))}

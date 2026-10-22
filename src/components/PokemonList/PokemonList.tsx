@@ -4,7 +4,7 @@ import './PokemonList.css'
 
 export type PokemonListProps = {
   pokemon: readonly Pokemon[]
-  onQuickView?: () => void
+  onQuickView?: (pokemon: Pokemon) => void
 }
 
 export function PokemonList({ pokemon, onQuickView }: PokemonListProps) {

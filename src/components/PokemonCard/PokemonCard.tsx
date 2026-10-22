@@ -1,18 +1,12 @@
 import { useState } from 'react'
 import type { Pokemon, PokemonStats } from '../../types/pokemon'
+import { getPokemonImageSource, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
 import './PokemonCard.css'
 
 export type PokemonCardProps = {
   pokemon: Pokemon
   imageSrc?: string | null
-  onQuickView?: () => void
-}
-
-const typeLabels: Readonly<Record<number, string>> = {
-  0: 'Sem tipo', 1: 'Normal', 2: 'Fogo', 3: 'Água', 4: 'Planta',
-  5: 'Elétrico', 6: 'Gelo', 7: 'Lutador', 8: 'Veneno', 9: 'Terra',
-  10: 'Voador', 11: 'Psíquico', 12: 'Inseto', 13: 'Pedra',
-  14: 'Fantasma', 15: 'Sombrio', 16: 'Dragão', 17: 'Aço',
+  onQuickView?: (pokemon: Pokemon) => void
 }
 
 const stats: readonly { key: keyof PokemonStats; label: string }[] = [
@@ -24,12 +18,7 @@ const stats: readonly { key: keyof PokemonStats; label: string }[] = [
   { key: 'speed', label: 'Velocidade' },
 ]
 
-// https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork
-function getImageSource(id: number): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
-}
-
-export function PokemonCard({ pokemon, imageSrc = getImageSource(pokemon.id), onQuickView }: PokemonCardProps) {
+export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.id), onQuickView }: PokemonCardProps) {
   const [failedSource, setFailedSource] = useState<string | null>(null)
   const hasImage = Boolean(imageSrc) && failedSource !== imageSrc
   const nameId = `pokemon-${pokemon.id}-name`
@@ -58,7 +47,7 @@ export function PokemonCard({ pokemon, imageSrc = getImageSource(pokemon.id), on
       <span className="pokemon-card__types" aria-label="Tipos">
         {pokemon.types.length > 0 ? pokemon.types.map((type) => (
           <span className="pokemon-card__type" data-type={type.id} key={type.id} title={type.name}>
-            {typeLabels[type.id] ?? type.name}
+          {getPokemonTypeLabel(type)}
           </span>
         )) : <span className="pokemon-card__type" data-type={0}>Sem tipo</span>}
       </span>
@@ -73,7 +62,7 @@ export function PokemonCard({ pokemon, imageSrc = getImageSource(pokemon.id), on
           className="pokemon-card__summary pokemon-card__trigger"
           aria-label={`Abrir consulta rápida de ${pokemon.name}`}
           aria-haspopup="dialog"
-          onClick={onQuickView}
+          onClick={() => onQuickView(pokemon)}
         >
           {content}
         </button>
