@@ -1,98 +1,150 @@
-# Pokédex DIAW
+# Pokédex — DIAW
 
-Atividade 03 da disciplina de Desenvolvimento e Integração de Aplicações Web da PUC Minas: uma Pokédex desenvolvida com React, Vite e TypeScript.
+Aplicação web desenvolvida como Atividade 03 da disciplina de **Desenvolvimento e Integração de Aplicações Web**, do curso de Engenharia de Software da **PUC Minas**.
 
-## Estado do projeto
+O projeto permite explorar os **151 Pokémon** presentes no conjunto de dados, consultar seus atributos e conhecer os **12 treinadores** e suas respectivas equipes.
 
-A etapa 01 prepara a organização, as variáveis de CSS, a tipografia e as configurações de desenvolvimento. A etapa 02 implementa a abertura estática da Home e a navegação entre início, catálogo e treinadores. O catálogo contém o container vazio para os cards da etapa 03, e treinadores possui a estrutura inicial.
+## Aplicação publicada
 
-- [Issue 01 — Setup](https://github.com/abneralmeidacord/Pokedex-DIAW/issues/1)
-- [Planejamento em 12 entregas](https://github.com/users/abneralmeidacord/projects/5)
-- [Protótipo no Figma](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-5)
+Acesse a Pokédex: [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/)
 
-## Requisitos
+## Integrantes
 
-- Node.js compatível com as dependências do projeto. Ambiente usado na validação: Node.js 22.14.0 e npm 11.3.0.
-- npm e acesso à internet para instalar as dependências pela primeira vez.
+- [Abner Almeida](https://github.com/abneralmeidacord)
+- [Guilherme Miranda Presot](https://github.com/gpresot)
+
+## Funcionalidades
+
+- Abertura animada da Pokédex, com opção de pular a animação.
+- Catálogo com pesquisa por nome ou ID, filtro por tipo e ordenação por ID.
+- Limpeza de filtros e mensagens para pesquisas sem resultados.
+- Modal de consulta rápida com tipos e atributos base.
+- Ficha do Pokémon com atributos e navegação para o anterior e o próximo.
+- Consulta dos treinadores associados a um Pokémon.
+- Listagem de treinadores com pesquisa por nome, insígnias e prévia da equipe.
+- Página da equipe de cada treinador, com links para as fichas dos integrantes.
+- Mensagens para Pokémon e treinadores não encontrados.
+- Layouts adaptáveis para celular, tablet e desktop.
+
+## Tecnologias
+
+| Tecnologia | Uso |
+| --- | --- |
+| React e React DOM | Componentes, estado e renderização da interface |
+| TypeScript | Tipagem dos dados, serviços e componentes |
+| Vite | Servidor de desenvolvimento e build de produção |
+| Motion | Animação de abertura da Pokédex |
+| CSS | Estilos por componente, layouts responsivos e variáveis compartilhadas |
+| ESLint | Análise estática do código |
+
+As versões das dependências estão registradas em `package.json` e `package-lock.json`.
 
 ## Instalação e execução
 
-Na pasta do projeto, instale as versões registradas no lockfile:
+### Requisitos
 
-```sh
+- Node.js **22.12 ou superior**; recomenda-se Node.js 24 LTS.
+- npm.
+- Git, caso o projeto seja obtido por clonagem.
+- Internet para instalar as dependências e carregar os recursos externos.
+
+### Passo a passo
+
+```bash
+git clone https://github.com/abneralmeidacord/Pokedex-DIAW.git
+cd Pokedex-DIAW
 npm ci
-```
-
-Inicie o servidor de desenvolvimento:
-
-```sh
 npm run dev
 ```
 
-Abra o endereço informado no terminal, normalmente `http://localhost:5173`. Se a porta estiver ocupada, o Vite informará outra porta.
+Se o projeto foi baixado em ZIP, extraia-o e abra o terminal na pasta que contém `package.json`. Depois execute `npm ci` e `npm run dev`.
 
-## Verificações
+Acesse a URL informada no terminal, normalmente **http://localhost:5173**. Caso a porta esteja ocupada, utilize a porta indicada pelo Vite.
 
-```sh
+Não é necessário configurar `.env`, banco de dados, chave de API ou servidor backend.
+
+## Comandos disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm ci` | Instala as dependências conforme o lockfile |
+| `npm run dev` | Inicia o ambiente de desenvolvimento |
+| `npm run lint` | Executa a análise estática com ESLint |
+| `npm run build` | Verifica os tipos com TypeScript e gera o build em `dist/` |
+| `npm run preview` | Serve o build localmente para conferência |
+
+Para conferir a versão de produção:
+
+```bash
 npm run lint
 npm run build
-```
-
-O build verifica os tipos com TypeScript e gera os arquivos de produção em `dist/`. Para conferir o resultado localmente após o build:
-
-```sh
 npm run preview
 ```
 
-O endereço padrão do preview é `http://localhost:4173`.
+O preview normalmente fica disponível em **http://localhost:4173**. Para hospedagem estática, publique o conteúdo da pasta `dist/`.
 
-## Organização
+## Estrutura do projeto
 
 | Caminho | Responsabilidade |
 | --- | --- |
-| `src/main.tsx` | Inicialização do React e importação dos estilos gerais |
-| `index.html` | Metadados em português e carregamento das fontes |
-| `src/App.tsx` | Navegação por hash, títulos por página e foco após troca de tela |
-| `src/components/Header/` | Marca e espaço opcional para navegação, com props tipadas e CSS próprio |
-| `src/components/Button/` | Botão reutilizável com variantes, ícone opcional e atributos nativos tipados |
-| `src/pages/Home/` | Composição estática da Home e estilos exclusivos |
-| `src/styles/variables.css` | Tokens compartilhados de cores, fontes, espaçamentos, raios e sombra |
-| `src/styles/global.css` | Reset, tipografia semântica, mídia, formulários e foco visível |
-| `src/assets/` | Arquivos importados pelo código |
-| `public/` | Arquivos públicos servidos diretamente, como o favicon |
+| `src/App.tsx` | Navegação por hash, título da página e gerenciamento de foco entre telas |
+| `src/pages/` | Home, catálogo, ficha do Pokémon, treinadores e equipes |
+| `src/components/` | Componentes reutilizáveis e seus respectivos arquivos CSS |
+| `src/services/pokedexService.ts` | Consulta aos dados locais e relações entre Pokémon e treinadores |
+| `src/data/pokedex-data.json` | Conjunto de dados disponibilizado pelo professor |
+| `src/types/` | Tipos dos dados e da navegação |
+| `src/utils/` | Filtros, rotas e funções de apresentação |
+| `src/hooks/` | Hook de preferência por movimento reduzido |
+| `src/styles/` | Estilos globais e variáveis de cores, fontes e espaçamentos |
+| `src/assets/` | Imagens e ícones importados pelos componentes |
+| `public/` | Arquivos públicos, incluindo as imagens do dispositivo Pokédex |
 
-O JSON está em src/data/pokedex-data.json. Criar serviços e modelos dos dados nas próximas etapas, conforme necessário.
+## Rotas
 
-## Convenções de estilos e tipos
+A navegação utiliza o hash da URL, sem React Router.
 
-- Manter cada CSS específico junto ao seu componente: por exemplo, `Header.tsx` e `Header.css`.
-- Importar esse CSS no próprio componente. Evitar estilos de componentes no arquivo global.
-- Reutilizar os tokens de `variables.css`: `var(--color-ink)`, `var(--space-24)` e `var(--radius-16)`, por exemplo.
-- Usar Outfit nos títulos, Inter na interface e `var(--font-mono)` nos IDs dos Pokémon. Elementos `code`, `pre`, `kbd` e `samp` também recebem Roboto Mono.
-- As três fontes são carregadas pelo Google Fonts em `index.html`, com `display=swap`. Esse carregamento precisa de internet; se falhar, as fontes de sistema definidas nos tokens mantêm a leitura. Não há dependência npm adicional para as fontes.
-- Preservar o foco visível e usar botões e links semânticos nas próximas telas.
-- Manter o TypeScript em modo estrito e tipar os dados e as props sem recorrer a `any`.
+| Rota | Página |
+| --- | --- |
+| `#inicio` | Abertura da Pokédex |
+| `#catalogo` | Catálogo de Pokémon |
+| `#pokemon/25` | Exemplo de ficha do Pikachu |
+| `#treinadores` | Lista de todos os treinadores |
+| `#treinadores?pokemon=25` | Treinadores que possuem Pikachu na equipe |
+| `#treinadores/1` | Exemplo de equipe de treinador |
 
-## Dados e referências
+## Dados e recursos visuais
 
-As próximas etapas utilizarão o [JSON disponibilizado pelo professor](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2003%20-%20JSON/data/pokedex-data.json), preservando seus registros e relações. O catálogo não será limitado aos exemplos ilustrados no Figma.
+Os registros e as relações entre Pokémon e treinadores são consultados a partir de `src/data/pokedex-data.json`. **Os fluxos de consulta não dependem de uma API externa.**
 
-Os valores base de cores, tipografia e espaçamento seguem o [catálogo no Figma](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-129). Fontes: [Outfit](https://fontsource.org/fonts/outfit), [Inter](https://fontsource.org/fonts/inter) e [Roboto Mono](https://fontsource.org/fonts/roboto-mono). As fontes das imagens de Pokémon e treinadores deverão ser documentadas quando esses arquivos forem adicionados.
+- **Dados:** [JSON disponibilizado pelo professor João Paulo Aramuni](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2003%20-%20JSON/data/pokedex-data.json).
+- **Imagens externas dos Pokémon:** [PokeAPI — sprites/official-artwork](https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork), carregadas por ID. Quando indisponíveis, a interface exibe uma alternativa textual.
+- **Elementos visuais locais:** arquivos incluídos em `src/assets/figma/` e `public/assets/imgs/`. A ficha do Bulbasaur utiliza uma imagem local.
+- **Retratos dos treinadores:** representação pela inicial do nome quando não há imagem cadastrada.
+- **Tipografia:** Outfit, Inter e Roboto Mono, carregadas pelo Google Fonts, com fontes de sistema como alternativa.
+- **Abertura animada:** componente adaptado do [PokedexCover disponibilizado pelo professor](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/tree/main/PROJETOS/React/Pokedex/src/components/PokedexCover).
 
-## Abertura estática e navegação — etapa 02
+As imagens externas e as fontes precisam de internet para carregar; os dados permanecem locais. Pokémon e seus elementos visuais pertencem aos respectivos titulares. Este projeto tem finalidade acadêmica.
 
-- Rotas: `#inicio`, `#catalogo` e `#treinadores`, sem nova dependência. A marca retorna ao início; links de navegação identificam a página atual com `aria-current`.
-- Button aceita props nativas tipadas, `variant` e `endIcon`. Com `href`, renderiza um link; para ações, um botão com `type="button"` por padrão.
-- Home aceita `catalogHref`. Abrir Pokédex e o dispositivo abrem imediatamente o catálogo.
-- Home e Header preservam a composição personalizada do projeto, com sombra no Header e sem os itens numerados ou o link Entrar sem animação. O dispositivo exibe apenas `public/assets/imgs/pokedex-closed.png`, sem trocar a imagem no hover ou foco. A imagem `pokedex-open.png` permanece disponível para a etapa de animações.
-- O limite da integração impediu consultar os demais frames. Catálogo e treinadores têm apenas a estrutura inicial desta etapa. O grid vazio do catálogo está preparado para a etapa 03.
-- CSS por componente, hover, foco visível, link Pular para o conteúdo, título por rota e foco no conteúdo ao navegar. Histórico, links diretos e recarregamento funcionam.
-- O JSON em `src/data/pokedex-data.json` foi preservado.
+## Acessibilidade e responsividade
 
-Validação realizada: build, lint, navegação com mouse e Tab/Enter, foco, voltar/avançar, links diretos e abertura imediata. Conferidas larguras de 320 a 1440 px, carregamento das imagens do dispositivo e ausência de erros no console do build de produção.
+A interface foi adaptada para celular, tablet e desktop, com ajustes nos grids, textos, imagens e espaçamentos.
 
-O commit será feito manualmente pelo desenvolvedor após sua validação:
+Os recursos de acessibilidade incluem:
 
-```sh
-git commit -m "feat: cria componentes base e abertura estatica da Pokedex"
-```
+- Navegação por teclado e foco visível.
+- Rótulos nos campos de pesquisa.
+- Link para pular ao conteúdo principal.
+- Indicação da página atual e atualização do título ao navegar.
+- Fechamento do modal por Escape, botão ou clique no fundo.
+- Contenção do foco no modal e retorno ao controle de origem ao fechar.
+- Respeito à preferência por movimento reduzido.
+- Opção de acessar o catálogo sem a animação de abertura.
+
+## Referências do projeto
+
+- [Aplicação publicada na Vercel](https://pokedex-diaw.vercel.app/)
+
+- [Repositório](https://github.com/abneralmeidacord/Pokedex-DIAW)
+- [Protótipo no Figma](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-5)
+- [Referência visual do catálogo](https://www.figma.com/design/H2jIAVXPU3I3Z3LqlvQHJ9/Pokedex?node-id=9-129)
+- [Planejamento das entregas](https://github.com/users/abneralmeidacord/projects/5)
