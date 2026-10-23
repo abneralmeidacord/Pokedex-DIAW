@@ -19,6 +19,10 @@
 }
 
 .trainer-team__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-24);
   padding: 32px;
   border-radius: 24px;
   background: #fff0f2;

@@ -1,0 +1,17 @@
+{
+  "description": "Retratos do anime Pokémon utilizados no projeto acadêmico. Personagens e imagens pertencem aos respectivos detentores de Pokémon; fontes de consulta: Serebii.net e Bulbagarden Archives.",
+  "sources": {
+    "ash.jpg": "https://www.serebii.net/anime/pictures/johto/269/0025.JPG",
+    "brock.jpg": "https://www.serebii.net/anime/pictures/houen/S4/0036.JPG",
+    "misty.jpg": "https://www.serebii.net/anime/pictures/houen/S8/0193.JPG",
+    "lt-surge.jpg": "https://www.serebii.net/anime/pictures/indigo/014/EP14107.jpg",
+    "erika.jpg": "https://www.serebii.net/anime/pictures/indigo/026/EP26251.jpg",
+    "koga.jpg": "https://www.serebii.net/anime/characters/pics/koga.jpg",
+    "sabrina.jpg": "https://www.serebii.net/anime/characters/pics/sabrina.jpg",
+    "blaine.jpg": "https://www.serebii.net/anime/pictures/indigo/058/I308.jpg",
+    "giovanni.jpg": "https://www.serebii.net/anime/pictures/houen/409/AG54.jpg",
+    "gary.jpg": "https://www.serebii.net/anime/pictures/houen/S16/S162.jpg",
+    "team-rocket.png": "https://archives.bulbagarden.net/wiki/File:Jessie_and_James.png",
+    "lance.jpg": "https://www.serebii.net/anime/pictures/pokemon/1101/DP95.jpg"
+  }
+}
