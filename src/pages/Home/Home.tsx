@@ -1,4 +1,8 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '../../components/Button/Button'
+import { PokedexCover } from '../../components/PokedexCover/PokedexCover'
+import type { PokedexCoverState } from '../../components/PokedexCover/PokedexCover'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 import './Home.css'
 
 export type HomeProps = {
@@ -6,6 +10,49 @@ export type HomeProps = {
 }
 
 export function Home({ catalogHref = '#catalogo' }: HomeProps) {
+  const [deviceState, setDeviceState] = useState<PokedexCoverState>('closed')
+  const phase = useRef<PokedexCoverState | 'complete'>('closed')
+  const mounted = useRef(true)
+  const prefersReducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    mounted.current = true
+    return () => { mounted.current = false }
+  }, [])
+
+  const navigateToCatalog = useCallback(() => {
+    if (!mounted.current || phase.current === 'complete') return
+    phase.current = 'complete'
+    window.location.assign(catalogHref)
+  }, [catalogHref])
+
+  useEffect(() => {
+    if (prefersReducedMotion && (phase.current === 'opening' || phase.current === 'open')) {
+      navigateToCatalog()
+    }
+  }, [prefersReducedMotion, navigateToCatalog])
+
+  function openPokedex() {
+    if (!mounted.current || phase.current !== 'closed') return
+    if (prefersReducedMotion) {
+      navigateToCatalog()
+      return
+    }
+    phase.current = 'opening'
+    setDeviceState('opening')
+  }
+
+  function finishOpening() {
+    if (!mounted.current || phase.current !== 'opening') return
+    phase.current = 'open'
+    setDeviceState('open')
+  }
+
+  function enterCatalog() {
+    if (!mounted.current || phase.current !== 'open') return
+    navigateToCatalog()
+  }
+
   return (
     <div className="home">
       <section className="home__hero" aria-labelledby="home-title">
@@ -20,21 +67,16 @@ export function Home({ catalogHref = '#catalogo' }: HomeProps) {
           <p className="home__description">
             Conheça os Pokémon, descubra seus atributos e encontre os parceiros dos seus treinadores favoritos.
           </p>
-          <Button className="home__action" href={catalogHref} endIcon="→">
-            Abrir Pokédex
+          <Button className="home__action" onClick={openPokedex} disabled={deviceState !== 'closed'} endIcon={'\u2192'}>
+            {deviceState === 'closed' ? 'Abrir Pokédex' : 'Abrindo Pokédex...'}
           </Button>
+          <button className="home__skip" type="button" onClick={navigateToCatalog}>
+            {deviceState === 'closed' ? 'Entrar sem animação' : 'Pular animação'}
+          </button>
         </div>
 
         <div className="home__visual">
-          <a className="home__device" href={catalogHref} aria-label="Abrir Pokédex">
-            <img
-              className="home__device-image"
-              src={`${import.meta.env.BASE_URL}assets/imgs/pokedex-closed.png`}
-              alt=""
-              width="1638"
-              height="2058"
-            />
-          </a>
+          <PokedexCover state={deviceState} onOpen={openPokedex} onOpeningComplete={finishOpening} onReady={enterCatalog} />
         </div>
       </section>
     </div>

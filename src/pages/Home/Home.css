@@ -79,16 +79,22 @@
   box-shadow: 0 8px 20px rgb(231 71 78 / 18%);
 }
 
-.home__device {
-  display: grid;
-  width: min(100%, 310px);
-  border-radius: var(--radius-16);
+.home__skip {
+  display: block;
+  min-height: 44px;
+  margin-top: var(--space-8);
+  padding: var(--space-8) 0;
+  border: 0;
+  border-radius: var(--radius-8);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--font-size-small);
+  text-align: left;
 }
 
-.home__device-image {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: auto;
+.home__skip:hover {
+  color: var(--color-ink);
+  text-decoration: underline;
 }
 
 @media (max-width: 900px) {
@@ -107,7 +113,4 @@
     font-size: clamp(3.5rem, 14vw, 7rem);
   }
 
-  .home__device {
-    width: min(100%, 260px);
-  }
 }

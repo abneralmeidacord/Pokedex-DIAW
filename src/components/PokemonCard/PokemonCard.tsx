@@ -62,7 +62,10 @@ export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.
           className="pokemon-card__summary pokemon-card__trigger"
           aria-label={`Abrir consulta rápida de ${pokemon.name}`}
           aria-haspopup="dialog"
-          onClick={() => onQuickView(pokemon)}
+          onClick={(event) => {
+            if (event.detail > 1) return
+            onQuickView(pokemon)
+          }}
         >
           {content}
         </button>
