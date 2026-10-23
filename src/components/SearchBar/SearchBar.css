@@ -46,3 +46,7 @@
   outline: 2px solid var(--color-red, #ff354d);
   outline-offset: 2px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .search-bar__input { transition: none; }
+}

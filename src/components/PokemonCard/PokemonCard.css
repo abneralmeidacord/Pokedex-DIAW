@@ -5,6 +5,11 @@
   box-shadow: var(--shadow-soft);
 }
 
+.pokemon-card:hover,
+.pokemon-card:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-red), var(--shadow-soft);
+}
+
 .pokemon-card__summary {
   display: flex;
   min-height: 270px;

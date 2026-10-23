@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { motion } from 'motion/react'
+import { useMotionPreferences } from '../../motion/preferences'
+import { getMotionTransition } from '../../motion/settings'
 import { Button } from '../../components/Button/Button'
 import { SearchBar } from '../../components/SearchBar/SearchBar'
 import { TrainerCard } from '../../components/TrainerCard/TrainerCard'
@@ -15,6 +18,7 @@ import './TrainersPage.css'
 const trainers = getTrainers()
 
 export function TrainersPage({ pokemonId }: { pokemonId?: number }) {
+  const reducedMotion = useMotionPreferences()
   const [query, setQuery] = useState('')
 
   const isPokemonContext = pokemonId !== undefined
@@ -64,7 +68,7 @@ export function TrainersPage({ pokemonId }: { pokemonId?: number }) {
       ) : (
         <ul className="trainers-page__list" aria-label="Lista de treinadores">
           {visibleTrainers.map((trainer) => (
-            <li className="trainers-page__item" key={trainer.id}>
+            <motion.li className="trainers-page__item" key={trainer.id} layout={reducedMotion ? false : 'position'} transition={getMotionTransition(reducedMotion)}>
               <TrainerCard
                 name={trainer.name}
                 badges={trainer.badges}
@@ -72,7 +76,7 @@ export function TrainersPage({ pokemonId }: { pokemonId?: number }) {
                 teamPreview={formatTeamPreview(getTrainerTeam(trainer).map((pokemon) => pokemon.name))}
                 onViewTeam={() => { window.location.hash = getTrainerHref(trainer.id) }}
               />
-            </li>
+            </motion.li>
           ))}
         </ul>
       )}

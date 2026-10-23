@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { motion } from 'motion/react'
+import { useMotionPreferences } from '../../motion/preferences'
+import { getMotionTransition, MOTION } from '../../motion/settings'
 import type { Pokemon, PokemonStats } from '../../types/pokemon'
 import { getPokemonImageSource, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
 import './PokemonCard.css'
@@ -6,7 +9,7 @@ import './PokemonCard.css'
 export type PokemonCardProps = {
   pokemon: Pokemon
   imageSrc?: string | null
-  onQuickView?: (pokemon: Pokemon) => void
+  onQuickView?: (pokemon: Pokemon, trigger: HTMLButtonElement, clickCount: number) => void
 }
 
 const stats: readonly { key: keyof PokemonStats; label: string }[] = [
@@ -19,6 +22,7 @@ const stats: readonly { key: keyof PokemonStats; label: string }[] = [
 ]
 
 export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.id), onQuickView }: PokemonCardProps) {
+  const reducedMotion = useMotionPreferences()
   const [failedSource, setFailedSource] = useState<string | null>(null)
   const hasImage = Boolean(imageSrc) && failedSource !== imageSrc
   const nameId = `pokemon-${pokemon.id}-name`
@@ -55,7 +59,13 @@ export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.
   )
 
   return (
-    <article className="pokemon-card" aria-labelledby={nameId}>
+    <motion.article
+      className="pokemon-card"
+      aria-labelledby={nameId}
+      whileHover={reducedMotion ? undefined : { y: -MOTION.distance.card }}
+      whileTap={reducedMotion ? undefined : { scale: MOTION.pressedScale }}
+      transition={getMotionTransition(reducedMotion, MOTION.duration.fast)}
+    >
       {onQuickView ? (
         <button
           type="button"
@@ -63,8 +73,7 @@ export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.
           aria-label={`Abrir consulta rápida de ${pokemon.name}`}
           aria-haspopup="dialog"
           onClick={(event) => {
-            if (event.detail > 1) return
-            onQuickView(pokemon)
+            onQuickView(pokemon, event.currentTarget, event.detail)
           }}
         >
           {content}
@@ -84,6 +93,6 @@ export function PokemonCard({ pokemon, imageSrc = getPokemonImageSource(pokemon.
           </dl>
         </details>
       )}
-    </article>
+    </motion.article>
   )
 }

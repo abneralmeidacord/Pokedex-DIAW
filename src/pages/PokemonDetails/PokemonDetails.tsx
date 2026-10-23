@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { motion } from 'motion/react'
 import type { CSSProperties } from 'react'
 import { Button } from '../../components/Button/Button'
 import { PokemonStats } from '../../components/PokemonStats/PokemonStats'
 import { getPokemonById, getPokemonNeighbors } from '../../services/pokedexService'
 import { getPokemonImageSource, getPokemonTypeColor, getPokemonTypeLabel } from '../../utils/pokemonPresentation'
+import { useMotionPreferences } from '../../motion/preferences'
+import { MOTION } from '../../motion/settings'
 import pokeballDetail from '../../assets/figma/pokeball-detail.svg'
 import bulbasaurDetail from '../../assets/figma/bulbasaur-detail.png'
 import './PokemonDetails.css'
@@ -13,6 +16,7 @@ export type PokemonDetailsProps = {
 }
 
 export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
+  const reducedMotion = useMotionPreferences()
   const pokemon = Number.isSafeInteger(pokemonId) && pokemonId > 0 ? getPokemonById(pokemonId) : undefined
   const [failedImageSource, setFailedImageSource] = useState<string | null>(null)
 
@@ -45,7 +49,20 @@ export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
           {failedImageSource === imageSource ? (
             <div className="pokemon-details__image pokemon-details__image--missing" role="img" aria-label={`Imagem de ${pokemon.name} indisponível`}>Sem imagem</div>
           ) : (
-            <img className="pokemon-details__image" src={imageSource} alt={pokemon.name} width={440} height={409} onError={() => setFailedImageSource(imageSource)} />
+            <motion.img
+              className="pokemon-details__image"
+              src={imageSource}
+              alt={pokemon.name}
+              width={440}
+              height={409}
+              style={{ x: '-50%' }}
+              initial={false}
+              animate={{ y: reducedMotion ? 0 : [0, -MOTION.distance.float, 0] }}
+              transition={reducedMotion
+                ? { duration: 0 }
+                : { duration: MOTION.duration.float, repeat: Infinity, ease: 'easeInOut' }}
+              onError={() => setFailedImageSource(imageSource)}
+            />
           )}
           <div className="pokemon-details__identity">
             <h1 id="pokemon-details-title">{pokemon.name}</h1>

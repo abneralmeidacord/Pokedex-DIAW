@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '../../components/Button/Button'
 import { PokemonList } from '../../components/PokemonList/PokemonList'
 import { PokemonQuickView } from '../../components/PokemonQuickView/PokemonQuickView'
@@ -25,6 +25,9 @@ export type CatalogProps = {
 
 export function Catalog({ filters, onFiltersChange, onViewDetails }: CatalogProps) {
   const [selectedPokemonId, setSelectedPokemonId] = useState<number | null>(null)
+  const pendingDetailsId = useRef<number | null>(null)
+  const quickViewTrigger = useRef<HTMLElement | null>(null)
+  const hasOpenedQuickView = useRef(false)
   const selectedPokemon = pokemon.find((record) => record.id === selectedPokemonId) ?? null
   const visiblePokemon = filterPokemon(pokemon, filters)
   const filtersActive = hasActiveFilters(filters)
@@ -34,9 +37,15 @@ export function Catalog({ filters, onFiltersChange, onViewDetails }: CatalogProp
   }
 
   function handleViewDetails(id: number) {
-    if (!onViewDetails || selectedPokemon?.id !== id) return
+    if (!onViewDetails || selectedPokemon?.id !== id || pendingDetailsId.current !== null) return
+    pendingDetailsId.current = id
     setSelectedPokemonId(null)
-    onViewDetails(id)
+  }
+
+  function handleQuickViewExit() {
+    const id = pendingDetailsId.current
+    pendingDetailsId.current = null
+    if (id !== null) onViewDetails?.(id)
   }
 
   return (
@@ -92,7 +101,12 @@ export function Catalog({ filters, onFiltersChange, onViewDetails }: CatalogProp
             <Button variant="secondary" onClick={clearFilters}>Limpar filtros</Button>
           </div>
         ) : (
-          <PokemonList pokemon={visiblePokemon} onQuickView={(record) => setSelectedPokemonId(record.id)} />
+          <PokemonList pokemon={visiblePokemon} onQuickView={(record, trigger, clickCount) => {
+            if (pendingDetailsId.current !== null || (!hasOpenedQuickView.current && clickCount > 1)) return
+            hasOpenedQuickView.current = true
+            quickViewTrigger.current = trigger
+            setSelectedPokemonId(record.id)
+          }} />
         )}
       </section>
 
@@ -101,6 +115,8 @@ export function Catalog({ filters, onFiltersChange, onViewDetails }: CatalogProp
         pokemon={selectedPokemon}
         onClose={() => setSelectedPokemonId(null)}
         onViewDetails={onViewDetails ? handleViewDetails : undefined}
+        onExitComplete={handleQuickViewExit}
+        returnFocusRef={quickViewTrigger}
       />
     </section>
   )
