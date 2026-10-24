@@ -56,7 +56,7 @@ export function PokemonDetails({ pokemonId }: PokemonDetailsProps) {
               width={440}
               height={409}
               style={{ x: '-50%' }}
-              initial={false}
+              initial={{ y: 0 }}
               animate={{ y: reducedMotion ? 0 : [0, -MOTION.distance.float, 0] }}
               transition={reducedMotion
                 ? { duration: 0 }

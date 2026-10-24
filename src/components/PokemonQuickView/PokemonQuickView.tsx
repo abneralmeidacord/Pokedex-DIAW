@@ -200,7 +200,7 @@ function QuickViewDialog({ pokemon, onClose, onViewDetails, returnFocusRef }: Qu
           <div className="pokemon-quick-view__body">
             <svg className="pokemon-quick-view__wave" viewBox="0 0 430 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
               <motion.path
-                initial={false}
+                initial={{ d: waveFrames[0] }}
                 animate={{ d: reducedMotion || !isPresent ? waveFrames[0] : waveFrames }}
                 transition={reducedMotion || !isPresent
                   ? { duration: 0 }
