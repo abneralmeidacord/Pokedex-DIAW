@@ -4,8 +4,6 @@ import pokedex.model.Pokemon;
 import pokedex.model.PokemonStats;
 import pokedex.model.PokemonType;
 import pokedex.model.Trainer;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.UpdateOneModel;
 import com.mongodb.client.model.UpdateOptions;
@@ -36,34 +34,30 @@ public class PokedexSeed implements CommandLineRunner {
             "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
     private final MongoTemplate mongo;
-    private final ObjectMapper json;
 
-    public PokedexSeed(MongoTemplate mongo, ObjectMapper json) {
+    public PokedexSeed(MongoTemplate mongo) {
         this.mongo = mongo;
-        this.json = json;
     }
 
     @Override
     public void run(String... args) throws IOException {
         var sql = new PokedexSql(new ClassPathResource("Script_Pokedex.sql").getContentAsString(StandardCharsets.UTF_8));
 
-        var types = new ArrayList<>(sql.rows("Types", 2).stream()
+        var types = sql.rows("Types", 2).stream()
                 .map(row -> new PokemonType(number(row, 0), row.get(1)))
-                .toList());
-        types.add(new PokemonType(18, "Fairy"));
-        var typesByName = types.stream().collect(Collectors.toMap(PokemonType::name, PokemonType::id));
+                .toList();
 
         var pokemonTypes = relations(sql, "Rel_Pokemon_Type");
-        var pokemon = new ArrayList<>(sql.rows("Pokemon", 8).stream()
+        var pokemon = sql.rows("Pokemon", 8).stream()
                 .map(row -> {
                     int id = number(row, 0);
                     var stats = new PokemonStats(number(row, 2), number(row, 3), number(row, 4),
                             number(row, 5), number(row, 6), number(row, 7));
                     return pokemon(id, row.get(1), stats, pokemonTypes.getOrDefault(id, List.of()));
                 })
-                .toList());
-        validateRelations(pokemonTypes, ids(pokemon, Pokemon::id), ids(types, PokemonType::id), "Rel_Pokemon_Type");
-        pokemon.addAll(readKalos(typesByName));
+                .toList();
+        var pokemonIds = ids(pokemon, Pokemon::id);
+        validateRelations(pokemonTypes, pokemonIds, ids(types, PokemonType::id), "Rel_Pokemon_Type");
 
         var trainerTeams = relations(sql, "Rel_Trainer_Pokemon");
         var trainers = sql.rows("Trainers", 3).stream()
@@ -72,29 +66,11 @@ public class PokedexSeed implements CommandLineRunner {
                     return new Trainer(id, row.get(1), number(row, 2), List.copyOf(trainerTeams.getOrDefault(id, List.of())));
                 })
                 .toList();
-        validateRelations(trainerTeams, ids(trainers, Trainer::id), ids(pokemon, Pokemon::id), "Rel_Trainer_Pokemon");
+        validateRelations(trainerTeams, ids(trainers, Trainer::id), pokemonIds, "Rel_Trainer_Pokemon");
 
         insertMissing(PokemonType.class, types);
         insertMissing(Pokemon.class, pokemon);
         insertMissing(Trainer.class, trainers);
-    }
-
-    private List<Pokemon> readKalos(Map<String, Integer> typesByName) throws IOException {
-        try (var stream = new ClassPathResource("kalos-pokemon.json").getInputStream()) {
-            List<KalosPokemon> records = json.readValue(stream, new TypeReference<>() {});
-            return records.stream()
-                    .map(record -> {
-                        var typeIds = record.types().stream().map(name -> {
-                            Integer id = typesByName.get(name);
-                            if (id == null) {
-                                throw new IllegalArgumentException("Tipo desconhecido em Kalos: " + name);
-                            }
-                            return id;
-                        }).toList();
-                        return pokemon(record.id(), record.name(), record.stats(), typeIds);
-                    })
-                    .toList();
-        }
     }
 
     private Pokemon pokemon(int id, String name, PokemonStats stats, List<Integer> typeIds) {
@@ -139,6 +115,4 @@ public class PokedexSeed implements CommandLineRunner {
                 .getUpserts().size();
         LOGGER.info("{}: {} novos, {} já existentes", collection, inserted, records.size() - inserted);
     }
-
-    private record KalosPokemon(int id, String name, PokemonStats stats, List<String> types) {}
 }

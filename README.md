@@ -2,7 +2,7 @@
 
 Aplicação web da disciplina de **Desenvolvimento e Integração de Aplicações Web**, do curso de Engenharia de Software da **PUC Minas**. Na Atividade 04, a interface React + Vite da Atividade 03 passou a consultar uma API Spring Boot com MongoDB.
 
-O catálogo reúne **223 Pokémon**, com os 151 do script da disciplina e 72 da geração de Kalos. A Pokédex permite consultar seus atributos e conhecer os **12 treinadores** e suas equipes.
+O catálogo reúne **721 Pokémon** da Pokédex Nacional, da primeira à sexta geração (Pokémon X e Y). A Pokédex permite consultar seus atributos e conhecer os **12 treinadores** e suas equipes.
 
 ## Aplicação publicada
 
@@ -76,7 +76,7 @@ export MONGODB_URI
 export MONGODB_DATABASE=pokedex
 ```
 
-Em um banco novo, execute a carga inicial a partir da raiz.
+Para popular um banco novo ou completar um catálogo existente até a sexta geração, execute a carga a partir da raiz.
 
 ```bash
 mvn -f backend/pom.xml spring-boot:run "-Dspring-boot.run.profiles=seed"
@@ -123,7 +123,7 @@ O preview normalmente fica disponível em `http://localhost:4173` e usa o mesmo 
 | `frontend/src/components/` | Componentes reutilizáveis e seus respectivos arquivos CSS |
 | `frontend/src/services/pokedexService.ts` | Leitura da API e consultas usadas pelas telas |
 | `backend/` | Aplicação Spring Boot, modelos MongoDB, repositórios e carga inicial |
-| `Script_Pokedex.sql` | Fonte dos registros e relações da atividade |
+| `Script_Pokedex.sql` | Fonte da carga inicial com os 721 Pokémon, tipos, treinadores e relações |
 | `frontend/src/types/` | Tipos dos dados e da navegação |
 | `frontend/src/utils/` | Filtros, rotas e funções de apresentação |
 | `frontend/src/hooks/` | Hook de preferência por movimento reduzido |
@@ -148,8 +148,7 @@ A navegação utiliza o hash da URL, sem React Router.
 
 A API `GET /api/pokedex` lê as três coleções e devolve os tipos, os Pokémon com seus tipos resolvidos e os treinadores. O frontend usa os dados para pesquisa, filtro, navegação das fichas e exibição das equipes.
 
-- Dados da atividade. [Script SQL disponibilizado pelo professor João Paulo Aramuni](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2004%20-%20SQL%20vs%20NoSQL/Script_Pokedex.sql)
-- Dados de Kalos. O arquivo `backend/src/main/resources/kalos-pokemon.json` reúne as formas padrão das espécies de números 650 a 721 da Pokédex Nacional, com nome, tipos e atributos base. [Dados da PokéAPI](https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv)
+- O `Script_Pokedex.sql` é a fonte da carga inicial. Ele reúne os registros e vínculos originais da atividade e acrescenta as formas padrão das espécies do nº 152 ao 721, com nome, tipos e atributos base. [SQL original do professor João Paulo Aramuni](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2004%20-%20SQL%20vs%20NoSQL/Script_Pokedex.sql) · [Dados da PokéAPI](https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv)
 - Imagens dos Pokémon. A carga registra a URL de cada arte pelo ID nacional. Quando a imagem está indisponível, a interface exibe uma alternativa textual. [PokéAPI Official Artwork](https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork)
 - Elementos visuais locais em `frontend/src/assets/figma/` e `frontend/public/assets/imgs/`. A ficha do Bulbasaur utiliza uma imagem local.
 - **Retratos dos treinadores:** representação pela inicial do nome quando não há imagem cadastrada.
@@ -166,7 +165,7 @@ As imagens externas e as fontes precisam de internet para carregar. Pokémon e s
 | `types` | `_id` e `name`, com os IDs do SQL e o ID 18 para o tipo Fada |
 | `trainers` | `_id` e `name` do SQL, contagem de insígnias em `badges` e equipe em `pokemonIds`, que referencia `pokemons._id` e preserva a ordem e as repetições do SQL |
 
-A carga usa o `_id` numérico como chave única e insere apenas registros ausentes. Em um banco novo, são esperados 223 Pokémon, 19 tipos e 12 treinadores. Execute a carga novamente para confirmar que o log registra zero novas inserções. A execução normal do backend inicia apenas a API. Uma nova carga manual repõe registros da fonte que tiverem sido excluídos.
+A carga usa o `_id` numérico como chave única e insere apenas registros ausentes. Em um banco novo, são esperados 721 Pokémon, 19 tipos e 12 treinadores. Execute a carga novamente para confirmar que o log registra zero novas inserções. A execução normal do backend inicia apenas a API. Uma nova carga manual repõe registros da fonte que tiverem sido excluídos.
 
 No **Data Explorer** do Atlas, confira Bulbasaur em `pokemons` pelo filtro `{ "_id": 1 }`. Os tipos 4 e 8 correspondem a Grass e Poison em `types`. Confira Koga em `trainers` com `{ "_id": 6 }`. O documento tem cinco insígnias e a equipe `[48, 48, 48, 49]`. O SQL deixa Mew sem relação de tipo e a carga preserva essa ausência.
 
