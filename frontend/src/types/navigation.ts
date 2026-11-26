@@ -1,1 +1,1 @@
-export type Page = 'inicio' | 'catalogo' | 'treinadores' | 'pokemon'
+export type Page = 'inicio' | 'catalogo' | 'treinadores' | 'pokemon' | 'login' | 'cadastro'

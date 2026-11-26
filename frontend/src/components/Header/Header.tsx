@@ -1,11 +1,18 @@
 import type { ReactNode } from 'react'
+import type { AccountProfile } from '../../services/authService'
 import type { Page } from '../../types/navigation'
+import { AccountAvatar } from '../AccountAvatar/AccountAvatar'
+import { Button } from '../Button/Button'
 import './Header.css'
 
 export type HeaderProps = {
   brand?: string
   homeHref?: string
   currentPage?: Page
+  account?: AccountProfile | null
+  avatarSource?: string
+  signingOut?: boolean
+  onSignOut?: () => void
   children?: ReactNode
 }
 
@@ -13,6 +20,10 @@ export function Header({
   brand = 'Pokédex',
   homeHref = '#inicio',
   currentPage = 'inicio',
+  account,
+  avatarSource,
+  signingOut,
+  onSignOut,
   children,
 }: HeaderProps) {
   return (
@@ -44,6 +55,24 @@ export function Header({
               Treinadores
             </a>
           </>}
+          {account ? (
+            <div className="header__account">
+              <AccountAvatar src={avatarSource} />
+              <span className="header__username" title={account.username}>{account.username}</span>
+              <Button variant="secondary" className="header__auth-button" onClick={onSignOut} disabled={signingOut}>
+                {signingOut ? 'Saindo…' : 'Sair'}
+              </Button>
+            </div>
+          ) : account === null && (
+            <Button
+              href="#login"
+              variant="secondary"
+              className="header__auth-button"
+              aria-current={currentPage === 'login' ? 'page' : undefined}
+            >
+              Entrar
+            </Button>
+          )}
         </nav>
       </div>
     </header>
