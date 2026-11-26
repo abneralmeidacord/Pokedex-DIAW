@@ -5,12 +5,16 @@ import { MotionPreferencesContext } from './motion/preferences'
 import { getMotionTransition, MOTION } from './motion/settings'
 import { Header } from './components/Header/Header'
 import { Button } from './components/Button/Button'
+import { AuthPage } from './pages/Auth/AuthPage'
 import { Home } from './pages/Home/Home'
 import { Catalog } from './pages/Catalog/Catalog'
 import { PokemonDetails } from './pages/PokemonDetails/PokemonDetails'
 import { TrainersPage } from './pages/Trainers/TrainersPage'
 import { TrainerTeamPage } from './pages/TrainerTeam/TrainerTeamPage'
 import { getTrainerIdFromHash } from './utils/routes'
+import { getPokemonImageSource } from './utils/pokemonPresentation'
+import { getSession, signOut } from './services/authService'
+import type { AccountProfile } from './services/authService'
 import { loadPokedex } from './services/pokedexService'
 import type { Page } from './types/navigation'
 import type { PokedexData } from './types/pokemon'
@@ -24,6 +28,8 @@ function getPage(): Page {
   switch (window.location.hash.split('?')[0]) {
     case '#catalogo': return 'catalogo'
     case '#treinadores': return 'treinadores'
+    case '#login': return 'login'
+    case '#cadastro': return 'cadastro'
     default: return 'inicio'
   }
 }
@@ -42,6 +48,8 @@ const titles: Record<Page, string> = {
   catalogo: 'Catálogo',
   treinadores: 'Treinadores',
   pokemon: 'Ficha do Pokémon',
+  login: 'Entrar',
+  cadastro: 'Criar conta',
 }
 
 function App() {
@@ -49,9 +57,9 @@ function App() {
   const locationHash = useSyncExternalStore(subscribeToNavigation, getLocationHash)
   const page = getPage()
   const trainerId = getTrainerIdFromHash(locationHash)
-  const pokemonParam = new URLSearchParams(
-    locationHash.split('?')[1] ?? ''
-  ).get('pokemon')
+  const routeParams = new URLSearchParams(locationHash.split('?')[1] ?? '')
+  const pokemonParam = routeParams.get('pokemon')
+  const isAuthPage = page === 'login' || page === 'cadastro'
 
   const relatedPokemonId = pokemonParam === null
     ? undefined
@@ -62,6 +70,27 @@ function App() {
   const [pokedex, setPokedex] = useState<PokedexData | null>(null)
   const [loadFailed, setLoadFailed] = useState(false)
   const [loadAttempt, setLoadAttempt] = useState(0)
+  const [account, setAccount] = useState<AccountProfile | null>()
+  const [signingOut, setSigningOut] = useState(false)
+  const [signOutFailed, setSignOutFailed] = useState(false)
+  const avatar = pokedex?.pokemon.find((record) => record.id === account?.pokemonId)
+  const avatarSource = account ? getPokemonImageSource(avatar ?? { id: account.pokemonId }) : undefined
+
+  useEffect(() => {
+    const request = new AbortController()
+    getSession(request.signal)
+      .then((profile) => {
+        if (!request.signal.aborted) setAccount((current) => current === undefined ? profile : current)
+      })
+      .catch(() => {
+        if (!request.signal.aborted) setAccount((current) => current ?? null)
+      })
+    return () => request.abort()
+  }, [])
+
+  useEffect(() => {
+    if (account && isAuthPage) window.location.replace('#catalogo')
+  }, [account, isAuthPage])
 
   useEffect(() => {
     const request = new AbortController()
@@ -82,6 +111,24 @@ function App() {
     }
   }, [page, locationHash])
 
+  async function endSession() {
+    setSignOutFailed(false)
+    setSigningOut(true)
+    try {
+      await signOut()
+      setAccount(null)
+    } catch {
+      setSignOutFailed(true)
+    } finally {
+      setSigningOut(false)
+    }
+  }
+
+  function beginSession(profile: AccountProfile) {
+    setAccount(profile)
+    window.location.hash = 'catalogo'
+  }
+
   return (
     <MotionPreferencesContext.Provider value={reducedMotion}>
       <MotionConfig reducedMotion={reducedMotion ? 'always' : 'never'} transition={getMotionTransition(reducedMotion)}>
@@ -95,8 +142,15 @@ function App() {
         >
           Pular para o conteúdo
         </a>
-        <Header currentPage={page === 'pokemon' ? 'catalogo' : page} />
+        <Header
+          currentPage={page === 'pokemon' ? 'catalogo' : page}
+          account={account}
+          avatarSource={avatarSource}
+          signingOut={signingOut}
+          onSignOut={endSession}
+        />
         <main ref={mainRef} id="conteudo" className="app__main" tabIndex={-1}>
+          {signOutFailed && <p className="app__data-status" role="alert">Não foi possível sair. Tente novamente.</p>}
           <motion.div
             key={locationHash}
             className="app__screen"
@@ -105,7 +159,16 @@ function App() {
             transition={getMotionTransition(reducedMotion)}
           >
             {page === 'inicio' && <Home />}
-            {page !== 'inicio' && pokedex === null && (
+            {isAuthPage && account === undefined && (
+              <p className="app__data-status" role="status">Verificando sua sessão…</p>
+            )}
+            {page === 'login' && account === null && (
+              <AuthPage mode="login" justRegistered={routeParams.get('cadastro') === 'ok'} onSignedIn={beginSession} />
+            )}
+            {page === 'cadastro' && account === null && pokedex && (
+              <AuthPage mode="cadastro" pokemon={pokedex.pokemon} onSignedIn={beginSession} />
+            )}
+            {page !== 'inicio' && page !== 'login' && pokedex === null && (!isAuthPage || account === null) && (
               <div className="app__data-status">
                 {loadFailed ? (
                   <>

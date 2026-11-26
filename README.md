@@ -23,6 +23,7 @@ A versão publicada corresponde à Atividade 03. [pokedex-diaw.vercel.app](https
 - Consulta dos treinadores associados a um Pokémon.
 - Listagem de treinadores com pesquisa por nome, insígnias e prévia da equipe.
 - Página da equipe de cada treinador, com links para as fichas dos integrantes.
+- Cadastro com escolha de um Pokémon como avatar, login e saída pelo cabeçalho.
 - Mensagens para Pokémon e treinadores não encontrados.
 - Layouts adaptáveis para celular, tablet e desktop.
 
@@ -35,6 +36,7 @@ A versão publicada corresponde à Atividade 03. [pokedex-diaw.vercel.app](https
 | Vite | Servidor de desenvolvimento e build de produção |
 | concurrently | Inicia o frontend e o backend no mesmo terminal |
 | Spring Boot, Spring Web e Maven | Backend e API REST |
+| Spring Security | Sessões, proteção CSRF e hash de senhas com PBKDF2 |
 | Spring Data MongoDB e MongoDB Atlas | Repositórios e persistência de dados |
 | Motion | Animação de abertura da Pokédex |
 | CSS | Estilos por componente, layouts responsivos e variáveis compartilhadas |
@@ -143,6 +145,20 @@ A navegação utiliza o hash da URL, sem React Router.
 | `#treinadores` | Lista de todos os treinadores |
 | `#treinadores?pokemon=25` | Treinadores que possuem Pikachu na equipe |
 | `#treinadores/1` | Exemplo de equipe de treinador |
+| `#cadastro` | Cadastro com seleção de Pokémon para a foto de perfil |
+| `#login` | Login por usuário e senha |
+
+## Contas e sessões
+
+O cadastro grava a conta em `accounts` com nome, usuário, hash da senha e ID do Pokémon escolhido. O nome de usuário é único independentemente de maiúsculas e minúsculas. A sessão usa um cookie HTTP-only, e o catálogo pode ser acessado sem login.
+
+| Método e rota | Operação |
+| --- | --- |
+| `GET /api/auth/csrf` | Obtém o token e o nome do cabeçalho para o próximo POST |
+| `POST /api/auth/register` | Recebe `name`, `username`, `password` e `pokemonId` em JSON |
+| `POST /api/auth/login` | Recebe `username` e `password` como dados de formulário e inicia a sessão |
+| `GET /api/auth/me` | Retorna o usuário autenticado e o ID do avatar |
+| `POST /api/auth/logout` | Encerra a sessão |
 
 ## Dados e recursos visuais
 
