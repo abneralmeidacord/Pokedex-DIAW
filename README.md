@@ -1,12 +1,12 @@
 # Pokédex — DIAW
 
-Aplicação web desenvolvida como Atividade 03 da disciplina de **Desenvolvimento e Integração de Aplicações Web**, do curso de Engenharia de Software da **PUC Minas**.
+Aplicação web da disciplina de **Desenvolvimento e Integração de Aplicações Web**, do curso de Engenharia de Software da **PUC Minas**. Na Atividade 04, a interface React + Vite da Atividade 03 passou a consultar uma API Spring Boot com MongoDB.
 
-O projeto permite explorar os **151 Pokémon** presentes no conjunto de dados, consultar seus atributos e conhecer os **12 treinadores** e suas respectivas equipes.
+O catálogo reúne **721 Pokémon** da Pokédex Nacional, da primeira à sexta geração (Pokémon X e Y). A Pokédex permite consultar seus atributos e conhecer os **12 treinadores** e suas equipes.
 
 ## Aplicação publicada
 
-Acesse a Pokédex: [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/)
+A versão publicada corresponde à Atividade 03. [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/)
 
 ## Integrantes
 
@@ -33,11 +33,14 @@ Acesse a Pokédex: [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/)
 | React e React DOM | Componentes, estado e renderização da interface |
 | TypeScript | Tipagem dos dados, serviços e componentes |
 | Vite | Servidor de desenvolvimento e build de produção |
+| concurrently | Inicia o frontend e o backend no mesmo terminal |
+| Spring Boot, Spring Web e Maven | Backend e API REST |
+| Spring Data MongoDB e MongoDB Atlas | Repositórios e persistência de dados |
 | Motion | Animação de abertura da Pokédex |
 | CSS | Estilos por componente, layouts responsivos e variáveis compartilhadas |
 | ESLint | Análise estática do código |
 
-As versões das dependências estão registradas em `package.json` e `package-lock.json`.
+O `package.json` da raiz reúne os comandos do projeto. As dependências do React ficam em `frontend/package.json`, e a instalação usa o `package-lock.json` da raiz.
 
 ## Instalação e execução
 
@@ -45,32 +48,59 @@ As versões das dependências estão registradas em `package.json` e `package-lo
 
 - Node.js **22.12 ou superior**; recomenda-se Node.js 24 LTS.
 - npm.
+- JDK **17 ou superior** e Maven **3.6.3 ou superior**.
+- Cluster MongoDB Atlas e usuário de banco com permissão `readWrite` no banco da Pokédex.
 - Git, caso o projeto seja obtido por clonagem.
 - Internet para instalar as dependências e carregar os recursos externos.
 
-### Passo a passo
+### MongoDB Atlas e backend
 
-```bash
-git clone https://github.com/abneralmeidacord/Pokedex-DIAW.git
-cd Pokedex-DIAW
-npm ci
-npm run dev
+1. No Atlas, autorize o IP da máquina que executará a aplicação em **Network Access** e crie o usuário do banco em **Database Access**.
+2. Em **Connect → Drivers**, copie a URI `mongodb+srv://` do cluster e preencha o usuário e a senha. Se a senha tiver caracteres reservados na URI, use a codificação percentual. [Guia de conexão do MongoDB Atlas](https://www.mongodb.com/docs/atlas/driver-connection/)
+3. Preencha `MONGODB_URI` no arquivo `.env` da raiz usando `.env.example` como modelo. Cole a URI completa sem aspas. O nome do banco vem de `MONGODB_DATABASE` e o padrão é `pokedex`. O Git ignora o `.env`.
+
+O backend carrega o `.env` automaticamente. Se preferir definir as variáveis no terminal, elas terão prioridade sobre os valores do arquivo.
+
+PowerShell 7
+
+```powershell
+$env:MONGODB_URI = Read-Host 'URI do MongoDB Atlas' -MaskInput
+$env:MONGODB_DATABASE = 'pokedex'
 ```
 
-Se o projeto foi baixado em ZIP, extraia-o e abra o terminal na pasta que contém `package.json`. Depois execute `npm ci` e `npm run dev`.
+Bash
 
-Acesse a URL informada no terminal, normalmente **http://localhost:5173**. Caso a porta esteja ocupada, utilize a porta indicada pelo Vite.
+```bash
+read -r -s -p 'URI do MongoDB Atlas: ' MONGODB_URI
+export MONGODB_URI
+export MONGODB_DATABASE=pokedex
+```
 
-Não é necessário configurar `.env`, banco de dados, chave de API ou servidor backend.
+Para popular um banco novo ou completar um catálogo existente até a sexta geração, execute a carga a partir da raiz.
+
+```bash
+mvn -f backend/pom.xml spring-boot:run "-Dspring-boot.run.profiles=seed"
+```
+
+### Frontend e backend
+
+```bash
+npm ci
+npm run concurrently
+```
+
+Execute os comandos na raiz. Acesse a URL informada pelo Vite, normalmente `http://localhost:5173`. A API está em `http://localhost:8080/api/pokedex`, e o Vite encaminha as chamadas em `/api` para o backend. Pressione `Ctrl+C` no terminal para encerrar os dois serviços.
 
 ## Comandos disponíveis
 
 | Comando | Descrição |
 | --- | --- |
-| `npm ci` | Instala as dependências conforme o lockfile |
-| `npm run dev` | Inicia o ambiente de desenvolvimento |
+| `npm ci` | Instala as dependências da raiz e do frontend a partir do lockfile |
+| `npm run concurrently` | Inicia o frontend e o backend juntos |
+| `npm run dev` | Inicia apenas o frontend |
+| `npm run dev:backend` | Inicia apenas o backend |
 | `npm run lint` | Executa a análise estática com ESLint |
-| `npm run build` | Verifica os tipos com TypeScript e gera o build em `dist/` |
+| `npm run build` | Verifica os tipos com TypeScript e gera o build em `frontend/dist/` |
 | `npm run preview` | Serve o build localmente para conferência |
 
 Para conferir a versão de produção:
@@ -81,23 +111,25 @@ npm run build
 npm run preview
 ```
 
-O preview normalmente fica disponível em **http://localhost:4173**. Para hospedagem estática, publique o conteúdo da pasta `dist/`.
+O preview normalmente fica disponível em `http://localhost:4173` e usa o mesmo proxy do ambiente de desenvolvimento. Em uma publicação, sirva o conteúdo de `frontend/dist/` e encaminhe `/api` para o backend no mesmo domínio.
 
 ## Estrutura do projeto
 
 | Caminho | Responsabilidade |
 | --- | --- |
-| `src/App.tsx` | Navegação por hash, título da página e gerenciamento de foco entre telas |
-| `src/pages/` | Home, catálogo, ficha do Pokémon, treinadores e equipes |
-| `src/components/` | Componentes reutilizáveis e seus respectivos arquivos CSS |
-| `src/services/pokedexService.ts` | Consulta aos dados locais e relações entre Pokémon e treinadores |
-| `src/data/pokedex-data.json` | Conjunto de dados disponibilizado pelo professor |
-| `src/types/` | Tipos dos dados e da navegação |
-| `src/utils/` | Filtros, rotas e funções de apresentação |
-| `src/hooks/` | Hook de preferência por movimento reduzido |
-| `src/styles/` | Estilos globais e variáveis de cores, fontes e espaçamentos |
-| `src/assets/` | Imagens e ícones importados pelos componentes |
-| `public/` | Arquivos públicos, incluindo as imagens do dispositivo Pokédex |
+| `frontend/` | Aplicação React + Vite e configurações do frontend |
+| `frontend/src/App.tsx` | Navegação por hash, título da página e gerenciamento de foco entre telas |
+| `frontend/src/pages/` | Home, catálogo, ficha do Pokémon, treinadores e equipes |
+| `frontend/src/components/` | Componentes reutilizáveis e seus respectivos arquivos CSS |
+| `frontend/src/services/pokedexService.ts` | Leitura da API e consultas usadas pelas telas |
+| `backend/` | Aplicação Spring Boot, modelos MongoDB, repositórios e carga inicial |
+| `Script_Pokedex.sql` | Fonte da carga inicial com os 721 Pokémon, tipos, treinadores e relações |
+| `frontend/src/types/` | Tipos dos dados e da navegação |
+| `frontend/src/utils/` | Filtros, rotas e funções de apresentação |
+| `frontend/src/hooks/` | Hook de preferência por movimento reduzido |
+| `frontend/src/styles/` | Estilos globais e variáveis de cores, fontes e espaçamentos |
+| `frontend/src/assets/` | Imagens e ícones importados pelos componentes |
+| `frontend/public/` | Arquivos públicos, incluindo as imagens do dispositivo Pokédex |
 
 ## Rotas
 
@@ -114,16 +146,30 @@ A navegação utiliza o hash da URL, sem React Router.
 
 ## Dados e recursos visuais
 
-Os registros e as relações entre Pokémon e treinadores são consultados a partir de `src/data/pokedex-data.json`. **Os fluxos de consulta não dependem de uma API externa.**
+A API `GET /api/pokedex` lê as três coleções e devolve os tipos, os Pokémon com seus tipos resolvidos e os treinadores. O frontend usa os dados para pesquisa, filtro, navegação das fichas e exibição das equipes.
 
-- **Dados:** [JSON disponibilizado pelo professor João Paulo Aramuni](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2003%20-%20JSON/data/pokedex-data.json).
-- **Imagens externas dos Pokémon:** [PokeAPI — sprites/official-artwork](https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork), carregadas por ID. Quando indisponíveis, a interface exibe uma alternativa textual.
-- **Elementos visuais locais:** arquivos incluídos em `src/assets/figma/` e `public/assets/imgs/`. A ficha do Bulbasaur utiliza uma imagem local.
+- O `Script_Pokedex.sql` é a fonte da carga inicial. Ele reúne os registros e vínculos originais da atividade e acrescenta as formas padrão das espécies do nº 152 ao 721, com nome, tipos e atributos base. [SQL original do professor João Paulo Aramuni](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/blob/main/ATIVIDADES/ATIVIDADE%2004%20-%20SQL%20vs%20NoSQL/Script_Pokedex.sql) · [Dados da PokéAPI](https://github.com/PokeAPI/pokeapi/tree/master/data/v2/csv)
+- Imagens dos Pokémon. A carga registra a URL de cada arte pelo ID nacional. Quando a imagem está indisponível, a interface exibe uma alternativa textual. [PokéAPI Official Artwork](https://github.com/PokeAPI/sprites/tree/master/sprites/pokemon/other/official-artwork)
+- Elementos visuais locais em `frontend/src/assets/figma/` e `frontend/public/assets/imgs/`. A ficha do Bulbasaur utiliza uma imagem local.
 - **Retratos dos treinadores:** representação pela inicial do nome quando não há imagem cadastrada.
 - **Tipografia:** Outfit, Inter e Roboto Mono, carregadas pelo Google Fonts, com fontes de sistema como alternativa.
 - **Abertura animada:** componente adaptado do [PokedexCover disponibilizado pelo professor](https://github.com/joaopauloaramuni/desenvolvimento-e-integracao-de-aplicacoes-web/tree/main/PROJETOS/React/Pokedex/src/components/PokedexCover).
 
-As imagens externas e as fontes precisam de internet para carregar; os dados permanecem locais. Pokémon e seus elementos visuais pertencem aos respectivos titulares. Este projeto tem finalidade acadêmica.
+As imagens externas e as fontes precisam de internet para carregar. Pokémon e seus elementos visuais pertencem aos respectivos titulares. Este projeto tem finalidade acadêmica.
+
+### Coleções e conferência da carga
+
+| Coleção | Campos e relações |
+| --- | --- |
+| `pokemons` | `_id` da Pokédex Nacional, `name`, `stats` com seis atributos, `imageUrl` e `typeIds`, que referencia `types._id` na ordem da fonte |
+| `types` | `_id` e `name`, com os IDs do SQL e o ID 18 para o tipo Fada |
+| `trainers` | `_id` e `name` do SQL, contagem de insígnias em `badges` e equipe em `pokemonIds`, que referencia `pokemons._id` e preserva a ordem e as repetições do SQL |
+
+A carga usa o `_id` numérico como chave única e insere apenas registros ausentes. Em um banco novo, são esperados 721 Pokémon, 19 tipos e 12 treinadores. Execute a carga novamente para confirmar que o log registra zero novas inserções. A execução normal do backend inicia apenas a API. Uma nova carga manual repõe registros da fonte que tiverem sido excluídos.
+
+No **Data Explorer** do Atlas, confira Bulbasaur em `pokemons` pelo filtro `{ "_id": 1 }`. Os tipos 4 e 8 correspondem a Grass e Poison em `types`. Confira Koga em `trainers` com `{ "_id": 6 }`. O documento tem cinco insígnias e a equipe `[48, 48, 48, 49]`. O SQL deixa Mew sem relação de tipo e a carga preserva essa ausência.
+
+No catálogo, pesquise por Sylveon ou pelo ID 700, selecione **Fada** e abra a ficha. A ficha deve exibir o tipo Fada, a imagem e os seis atributos base.
 
 ## Acessibilidade e responsividade
 
