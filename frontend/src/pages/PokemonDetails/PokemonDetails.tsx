@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import type { AccountProfile } from '../../services/authService'
+import { setPokemonFavorite } from '../../services/authService'
 import { motion } from 'motion/react'
 import type { CSSProperties } from 'react'
 import { Button } from '../../components/Button/Button'
@@ -15,12 +17,16 @@ import './PokemonDetails.css'
 export type PokemonDetailsProps = {
   pokedex: PokedexData
   pokemonId: number
+  account: AccountProfile | null
+  onAccountChange: (account: AccountProfile | null) => void
 }
 
-export function PokemonDetails({ pokedex, pokemonId }: PokemonDetailsProps) {
+export function PokemonDetails({ pokedex, pokemonId, account, onAccountChange }: PokemonDetailsProps) {
   const reducedMotion = useMotionPreferences()
   const pokemon = getPokemonById(pokedex, pokemonId)
   const [failedImageSource, setFailedImageSource] = useState<string | null>(null)
+  const [favoriteBusy, setFavoriteBusy] = useState(false)
+  const [favoriteError, setFavoriteError] = useState('')
 
   if (!pokemon) {
     return (
@@ -34,6 +40,27 @@ export function PokemonDetails({ pokedex, pokemonId }: PokemonDetailsProps) {
 
   const imageSource = pokemon.id === 1 ? bulbasaurDetail : getPokemonImageSource(pokemon)
   const { previous, next } = getPokemonNeighbors(pokedex, pokemon.id)
+  const currentPokemonId = pokemon.id
+  const isFavorite = account?.favoritePokemonIds.includes(currentPokemonId) ?? false
+
+  async function toggleFavorite() {
+    if (!account) {
+      setFavoriteError('Entre na sua conta para salvar Pokémon nos favoritos.')
+      return
+    }
+    setFavoriteBusy(true)
+    setFavoriteError('')
+    try {
+      await setPokemonFavorite(currentPokemonId, !isFavorite)
+      onAccountChange({ ...account, favoritePokemonIds: isFavorite
+        ? account.favoritePokemonIds.filter((id) => id !== currentPokemonId)
+        : [...account.favoritePokemonIds, currentPokemonId] })
+    } catch (error) {
+      setFavoriteError(error instanceof Error ? error.message : 'Não foi possível atualizar seus favoritos.')
+    } finally {
+      setFavoriteBusy(false)
+    }
+  }
 
   return (
     <section
@@ -88,6 +115,10 @@ export function PokemonDetails({ pokedex, pokemonId }: PokemonDetailsProps) {
           <h2 className="pokemon-details__heading">Pequeno no tamanho.<br />Grande no potencial.</h2>
           <p className="pokemon-details__description">Consulte os seis atributos base de {pokemon.name} e descubra os treinadores associados a ele.</p>
           <PokemonStats stats={pokemon.stats} variant="detail" />
+          <Button variant="secondary" onClick={toggleFavorite} disabled={favoriteBusy} aria-pressed={isFavorite}>
+            <span aria-hidden="true">{isFavorite ? '★' : '☆'}</span> {isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          </Button>
+          {favoriteError && <p role="status">{favoriteError} {!account && <a href="#login">Entrar</a>}</p>}
           <Button className="pokemon-details__trainers" variant="secondary" endIcon={'\u2192'} href={`#treinadores?pokemon=${pokemon.id}`}>
             Conhecer os treinadores
           </Button>

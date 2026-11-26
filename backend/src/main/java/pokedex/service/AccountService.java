@@ -14,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pokedex.model.Account;
 import pokedex.repository.AccountRepository;
 import pokedex.repository.PokemonRepository;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AccountService implements UserDetailsService {
@@ -36,7 +38,8 @@ public class AccountService implements UserDetailsService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe um nome de 2 a 60 caracteres.");
         }
         if (!USERNAME.matcher(username).matches()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Use de 3 a 24 letras, números ou sublinhados no usuário.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Use de 3 a 24 letras, números ou sublinhados no usuário.");
         }
         if (password == null || password.isBlank() || password.length() < 8 || password.length() > 128) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe uma senha de 8 a 128 caracteres.");
@@ -44,7 +47,13 @@ public class AccountService implements UserDetailsService {
         if (pokemonId == null || pokemonId <= 0 || !pokemon.existsById(pokemonId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Escolha um Pokémon do catálogo para o perfil.");
         }
-        var account = new Account(accountId(username), name, username, passwords.encode(password), pokemonId);
+        var account = new Account(
+                accountId(username),
+                name,
+                username,
+                passwords.encode(password),
+                pokemonId,
+                java.util.List.of());
         try {
             accounts.insert(account);
         } catch (DuplicateKeyException exception) {
@@ -61,13 +70,73 @@ public class AccountService implements UserDetailsService {
 
     public Profile profile(String id) {
         return accounts.findById(id)
-                .map(account -> new Profile(account.username(), account.pokemonId()))
+                .map(account -> new Profile(account.username(), account.pokemonId(),
+                        account.favoritePokemonIds() == null ? List.of() : account.favoritePokemonIds()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+    }
+
+    public List<Integer> favorites(String accountId) {
+        var account = accounts.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        return account.favoritePokemonIds() == null
+                ? List.of()
+                : account.favoritePokemonIds();
+    }
+
+    public void addFavorite(String accountId, Integer pokemonId) {
+        if (pokemonId == null || pokemonId <= 0 || !pokemon.existsById(pokemonId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokémon não encontrado.");
+        }
+
+        var account = accounts.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        var favorites = new ArrayList<>(
+                account.favoritePokemonIds() == null
+                        ? List.<Integer>of()
+                        : account.favoritePokemonIds()
+        );
+
+        if (!favorites.contains(pokemonId)) {
+            favorites.add(pokemonId);
+        }
+
+        accounts.save(new pokedex.model.Account(
+                account.id(),
+                account.name(),
+                account.username(),
+                account.passwordHash(),
+                account.pokemonId(),
+                favorites
+        ));
+    }
+
+    public void removeFavorite(String accountId, Integer pokemonId) {
+        var account = accounts.findById(accountId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        var favorites = new ArrayList<>(
+                account.favoritePokemonIds() == null
+                        ? List.<Integer>of()
+                        : account.favoritePokemonIds()
+        );
+
+        favorites.remove(pokemonId);
+
+        accounts.save(new pokedex.model.Account(
+                account.id(),
+                account.name(),
+                account.username(),
+                account.passwordHash(),
+                account.pokemonId(),
+                favorites
+        ));
     }
 
     private String accountId(String username) {
         return username.strip().toLowerCase(Locale.ROOT);
     }
 
-    public record Profile(String username, int pokemonId) {}
+    public record Profile(String username, int pokemonId, List<Integer> favoritePokemonIds) {}
 }

@@ -58,7 +58,7 @@ export function Header({
           {account ? (
             <div className="header__account">
               <AccountAvatar src={avatarSource} />
-              <span className="header__username" title={account.username}>{account.username}</span>
+              <a className="header__username" title={account.username} href="#perfil">{account.username}</a>
               <Button variant="secondary" className="header__auth-button" onClick={onSignOut} disabled={signingOut}>
                 {signingOut ? 'Saindo…' : 'Sair'}
               </Button>

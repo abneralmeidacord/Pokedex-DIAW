@@ -8,6 +8,8 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,6 +41,18 @@ public class AuthController {
     @GetMapping("/me")
     public Profile profile(Principal principal) {
         return accounts.profile(principal.getName());
+    }
+
+    @PostMapping("/favorites/{pokemonId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addFavorite(Principal principal, @PathVariable Integer pokemonId) {
+        accounts.addFavorite(principal.getName(), pokemonId);
+    }
+
+    @DeleteMapping("/favorites/{pokemonId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeFavorite(Principal principal, @PathVariable Integer pokemonId) {
+        accounts.removeFavorite(principal.getName(), pokemonId);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
