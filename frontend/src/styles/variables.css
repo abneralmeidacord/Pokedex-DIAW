@@ -48,3 +48,27 @@
   --radius-999: 999px;
   --shadow-soft: 0 8px 12px rgb(36 48 77 / 5%);
 }
+:root {
+  --color-accent: #278b70;
+  --color-favorite: #d69b22;
+  --color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-scheme: dark;
+  --color-canvas: #171c1b;
+  --color-surface: #242b29;
+  --color-white: #303936;
+  --color-ink: #f1f7f3;
+  --color-muted: #aabbb2;
+  --color-line: #3b4842;
+
+  --color-accent: #83e6bd;
+  --color-favorite: #ffd166;
+  --color-focus: #83e6bd;
+
+  --color-red-soft: #3b292b;
+  --shadow-soft: 0 8px 20px rgb(0 0 0 / 25%);
+}
