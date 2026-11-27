@@ -1,9 +1,12 @@
+
 import type { ReactNode } from 'react'
 import type { AccountProfile } from '../../services/authService'
 import type { Page } from '../../types/navigation'
 import { AccountAvatar } from '../AccountAvatar/AccountAvatar'
 import { Button } from '../Button/Button'
 import './Header.css'
+
+type Theme = 'light' | 'dark'
 
 export type HeaderProps = {
   brand?: string
@@ -13,6 +16,8 @@ export type HeaderProps = {
   avatarSource?: string
   signingOut?: boolean
   onSignOut?: () => void
+  theme: Theme
+  onToggleTheme: () => void
   children?: ReactNode
 }
 
@@ -24,6 +29,8 @@ export function Header({
   avatarSource,
   signingOut,
   onSignOut,
+  theme,
+  onToggleTheme,
   children,
 }: HeaderProps) {
   return (
@@ -38,6 +45,7 @@ export function Header({
           <span className="header__mark" aria-hidden="true" />
           {brand}
         </a>
+
         <nav className="header__navigation" aria-label="Principal">
           {children ?? <>
             <a
@@ -55,11 +63,32 @@ export function Header({
               Treinadores
             </a>
           </>}
+
+          <button
+            type="button"
+            className="header__theme-toggle"
+            onClick={onToggleTheme}
+            aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+            aria-pressed={theme === 'dark'}
+            title={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
+          >
+            <span aria-hidden="true">
+              {theme === 'dark' ? '☀' : '☾'}
+            </span>
+          </button>
+
           {account ? (
             <div className="header__account">
               <AccountAvatar src={avatarSource} />
-              <span className="header__username" title={account.username}>{account.username}</span>
-              <Button variant="secondary" className="header__auth-button" onClick={onSignOut} disabled={signingOut}>
+              <span className="header__username" title={account.username}>
+                {account.username}
+              </span>
+              <Button
+                variant="secondary"
+                className="header__auth-button"
+                onClick={onSignOut}
+                disabled={signingOut}
+              >
                 {signingOut ? 'Saindo…' : 'Sair'}
               </Button>
             </div>

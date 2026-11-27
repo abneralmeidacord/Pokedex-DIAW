@@ -52,6 +52,13 @@ const titles: Record<Page, string> = {
   cadastro: 'Criar conta',
 }
 
+type Theme = 'light' | 'dark'
+
+function getSavedTheme(): Theme {
+  const savedTheme = localStorage.getItem('pokedex-theme')
+  return savedTheme === 'dark' ? 'dark' : 'light'
+}
+
 function App() {
   const reducedMotion = useReducedMotion()
   const locationHash = useSyncExternalStore(subscribeToNavigation, getLocationHash)
@@ -60,7 +67,7 @@ function App() {
   const routeParams = new URLSearchParams(locationHash.split('?')[1] ?? '')
   const pokemonParam = routeParams.get('pokemon')
   const isAuthPage = page === 'login' || page === 'cadastro'
-
+  const [theme, setTheme] = useState<Theme>(getSavedTheme)
   const relatedPokemonId = pokemonParam === null
     ? undefined
     : Number(pokemonParam)
@@ -110,7 +117,14 @@ function App() {
       previousLocation.current = locationHash
     }
   }, [page, locationHash])
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('pokedex-theme', theme)
+  }, [theme])
 
+  function toggleTheme() {
+    setTheme((current) => current === 'light' ? 'dark' : 'light')
+  }
   async function endSession() {
     setSignOutFailed(false)
     setSigningOut(true)
@@ -148,6 +162,8 @@ function App() {
           avatarSource={avatarSource}
           signingOut={signingOut}
           onSignOut={endSession}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
         <main ref={mainRef} id="conteudo" className="app__main" tabIndex={-1}>
           {signOutFailed && <p className="app__data-status" role="alert">Não foi possível sair. Tente novamente.</p>}
