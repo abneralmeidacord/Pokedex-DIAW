@@ -80,9 +80,9 @@ export function Header({
           {account ? (
             <div className="header__account">
               <AccountAvatar src={avatarSource} />
-              <span className="header__username" title={account.username}>
+              <a className="header__username" title={account.username} href="#perfil">
                 {account.username}
-              </span>
+              </a>
               <Button
                 variant="secondary"
                 className="header__auth-button"

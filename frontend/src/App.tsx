@@ -11,6 +11,7 @@ import { Catalog } from './pages/Catalog/Catalog'
 import { PokemonDetails } from './pages/PokemonDetails/PokemonDetails'
 import { TrainersPage } from './pages/Trainers/TrainersPage'
 import { TrainerTeamPage } from './pages/TrainerTeam/TrainerTeamPage'
+import { ProfilePage } from './pages/Profile/ProfilePage'
 import { getTrainerIdFromHash } from './utils/routes'
 import { getPokemonImageSource } from './utils/pokemonPresentation'
 import { getSession, signOut } from './services/authService'
@@ -24,6 +25,7 @@ import './App.css'
 
 function getPage(): Page {
   if (window.location.hash.startsWith('#pokemon/')) return 'pokemon'
+  if (window.location.hash === '#perfil') return 'perfil'
   if (getTrainerIdFromHash(window.location.hash) !== null) return 'treinadores'
   switch (window.location.hash.split('?')[0]) {
     case '#catalogo': return 'catalogo'
@@ -48,6 +50,7 @@ const titles: Record<Page, string> = {
   catalogo: 'Catálogo',
   treinadores: 'Treinadores',
   pokemon: 'Ficha do Pokémon',
+  perfil: 'Perfil',
   login: 'Entrar',
   cadastro: 'Criar conta',
 }
@@ -208,8 +211,10 @@ function App() {
               />
             )}
             {page === 'pokemon' && pokedex && (
-              <PokemonDetails pokedex={pokedex} pokemonId={Number(locationHash.slice('#pokemon/'.length))} />
+              <PokemonDetails pokedex={pokedex} pokemonId={Number(locationHash.slice('#pokemon/'.length))} account={account ?? null} onAccountChange={setAccount} />
             )}
+            {page === 'perfil' && pokedex && account && <ProfilePage pokedex={pokedex} account={account} />}
+            {page === 'perfil' && account === null && <AuthPage mode="login" justRegistered={false} onSignedIn={beginSession} />}
             {page === 'treinadores' && pokedex && (
               trainerId === null ? (
                 <TrainersPage

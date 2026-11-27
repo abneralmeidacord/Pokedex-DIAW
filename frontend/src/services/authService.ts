@@ -1,6 +1,7 @@
 export type AccountProfile = {
   readonly username: string
   readonly pokemonId: number
+  readonly favoritePokemonIds: number[]
 }
 
 type Registration = {
@@ -55,4 +56,16 @@ export async function signIn(username: string, password: string): Promise<Accoun
 export async function signOut(): Promise<void> {
   const response = await postAuth('logout')
   if (!response.ok) throw new Error('Não foi possível sair. Tente novamente.')
+}
+
+export async function setPokemonFavorite(pokemonId: number, favorite: boolean): Promise<void> {
+  const csrfResponse = await fetch('/api/auth/csrf')
+  if (!csrfResponse.ok) throw new Error('Não foi possível conectar à Pokédex.')
+  const csrf: CsrfToken = await csrfResponse.json()
+  const result = await fetch(`/api/auth/favorites/${pokemonId}`, {
+    method: favorite ? 'POST' : 'DELETE',
+    headers: { [csrf.headerName]: csrf.token },
+  })
+  if (result.status === 401) throw new Error('Entre na sua conta para salvar favoritos.')
+  if (!result.ok) throw new Error('Não foi possível atualizar seus favoritos.')
 }

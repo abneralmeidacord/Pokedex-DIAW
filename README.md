@@ -142,6 +142,7 @@ A navegação utiliza o hash da URL, sem React Router.
 | `#inicio` | Abertura da Pokédex |
 | `#catalogo` | Catálogo de Pokémon |
 | `#pokemon/25` | Exemplo de ficha do Pikachu |
+| `#perfil` | Perfil da conta e lista de Pokémon favoritos |
 | `#treinadores` | Lista de todos os treinadores |
 | `#treinadores?pokemon=25` | Treinadores que possuem Pikachu na equipe |
 | `#treinadores/1` | Exemplo de equipe de treinador |
@@ -159,6 +160,10 @@ O cadastro grava a conta em `accounts` com nome, usuário, hash da senha e ID do
 | `POST /api/auth/login` | Recebe `username` e `password` como dados de formulário e inicia a sessão |
 | `GET /api/auth/me` | Retorna o usuário autenticado e o ID do avatar |
 | `POST /api/auth/logout` | Encerra a sessão |
+| `POST /api/auth/favorites/{pokemonId}` | Salva um Pokémon nos favoritos da conta autenticada |
+| `DELETE /api/auth/favorites/{pokemonId}` | Remove um Pokémon dos favoritos da conta autenticada |
+
+Os IDs favoritos ficam no documento da conta em `favoritePokemonIds`. `GET /api/auth/me` também devolve essa lista, que é carregada novamente ao iniciar sessão.
 
 ## Dados e recursos visuais
 
