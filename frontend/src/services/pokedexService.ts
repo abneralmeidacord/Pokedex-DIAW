@@ -1,11 +1,20 @@
 import type { PokedexData, Pokemon, Trainer } from '../types/pokemon'
 
-export async function loadPokedex(signal: AbortSignal): Promise<PokedexData> {
-  const response = await fetch('/api/pokedex', { signal })
+async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
+  const response = await fetch(url, { signal })
   if (!response.ok) {
-    throw new Error(`A API da Pokédex retornou HTTP ${response.status}.`)
+    throw new Error(`A API da Pokédex retornou HTTP ${response.status} em ${url}.`)
   }
   return response.json()
+}
+
+// Tipos e Pokémon vêm de /api/pokedex; os treinadores vêm da coleção `trainers` via /api/trainers.
+export async function loadPokedex(signal: AbortSignal): Promise<PokedexData> {
+  const [catalog, trainers] = await Promise.all([
+    fetchJson<Omit<PokedexData, 'trainers'>>('/api/pokedex', signal),
+    fetchJson<readonly Trainer[]>('/api/trainers', signal),
+  ])
+  return { ...catalog, trainers }
 }
 
 export function getPokemonById(pokedex: PokedexData, id: number): Pokemon | undefined {
