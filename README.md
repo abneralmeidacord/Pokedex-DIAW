@@ -6,7 +6,7 @@ O catálogo reúne **721 Pokémon** da Pokédex Nacional, da primeira à sexta g
 
 ## Aplicação publicada
 
-A versão publicada corresponde à Atividade 03. [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/)
+A versão da Atividade 04 está em [pokedex-diaw.vercel.app](https://pokedex-diaw.vercel.app/). A Vercel serve o frontend e encaminha as chamadas em `/api` para o Spring Boot no Render.
 
 ## Integrantes
 
