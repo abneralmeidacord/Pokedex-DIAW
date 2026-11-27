@@ -1,0 +1,7 @@
+*
+!backend/
+!backend/Dockerfile
+!backend/pom.xml
+!backend/src/
+!backend/src/**
+!Script_Pokedex.sql

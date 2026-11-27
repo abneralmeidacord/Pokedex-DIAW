@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests -> requests
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/pokedex", "/api/auth/csrf").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/trainers", "/api/trainers/{id}").permitAll()
                         .requestMatchers(HttpMethod.HEAD, "/api/pokedex").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
