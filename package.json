@@ -2,30 +2,18 @@
   "name": "pokedex-diaw",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "motion": "14.6.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "concurrently": "concurrently --kill-others --names frontend,backend \"npm run dev\" \"npm run dev:backend\"",
+    "dev": "npm run dev --workspace frontend",
+    "dev:backend": "mvn -f backend/pom.xml spring-boot:run",
+    "build": "npm run build --workspace frontend",
+    "lint": "npm run lint --workspace frontend",
+    "preview": "npm run preview --workspace frontend"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.19.2",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "eslint": "^10.13.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.7",
-    "globals": "^17.13.0",
-    "typescript": "~6.0.3",
-    "typescript-eslint": "^8.71.2",
-    "vite": "^8.3.4"
+    "concurrently": "^10.0.7"
   }
 }

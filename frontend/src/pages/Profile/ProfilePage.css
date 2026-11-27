@@ -1,0 +1,11 @@
+.profile-page { width: min(100% - 48px, 1200px); margin: 0 auto; padding: 32px 0 64px; }
+.profile-page__eyebrow { color: var(--color-red); font-size: var(--font-size-micro); text-transform: uppercase; }
+.profile-page h1 { margin: 8px 0 32px; }
+.profile-page h2 { margin-bottom: 20px; }
+.profile-page__empty { padding: 32px; border-radius: 24px; background: var(--color-surface); color: var(--color-muted); }
+.profile-page__empty p { margin-bottom: 20px; }
+.profile-page__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; padding: 0; list-style: none; }
+.profile-page__card { display: flex; min-height: 92px; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--color-line); border-radius: 20px; background: var(--color-surface); color: inherit; font-weight: var(--font-weight-semibold); text-decoration: none; }
+.profile-page__card:hover { border-color: var(--color-red); }
+.profile-page__card img { width: 64px; height: 64px; object-fit: contain; }
+.profile-page__card span:last-child { margin-left: auto; color: var(--color-red); }
